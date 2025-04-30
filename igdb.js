@@ -26,8 +26,8 @@ const IGDBGeneral = async (url, data) => {
         maxBodyLength: Infinity,
         url: url,
         headers: { 
-          'Client-ID': '8ddvkgajnp2c7xsdu0kt9xk3wwth3l', 
-          'Authorization': 'Bearer 8k7y47pcexz5cel4v3368bpj7t70j2', 
+          'Client-ID': ClientID, 
+          'Authorization': Authorization, 
           'Content-Type': 'application/raw', 
           'Cookie': '__cf_bm=PlCl1o47o2P4UNo9HUWNNT47O0HAMD0T53k4KrapxgE-1746040815-1.0.1.1-iEsmbKVv10qhLevW8XN6EbN2kfptZz5eaOox9fet3tYxaQe_IWYCPCWX0.avZefiHBwTBFyVILe67hIJrrr.d3Urf5yfFbPthwQh0gJdGQM'
         },
