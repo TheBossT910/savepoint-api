@@ -51,20 +51,73 @@ const IGDBCover = (gameID) => {
 }
 
 const IGDBWebsite = (websiteIDs) => {
-    let data = `fields url, type; where id = (${websiteIDs.join(" ")});`;
+    let data = `fields url, type; where id = (${websiteIDs.join(", ")});`;
     let url = 'https://api.igdb.com/v4/websites';
     return IGDBGeneral(url, data);
 }
 
 const IGDBScreenshot = (screenshotIDs) => {
-    let data = `  fields url, width, height; where id = (${screenshotIDs.join(" ")});`;
+    let data = `  fields url, width, height; where id = (${screenshotIDs.join(", ")});`;
     let url = 'https://api.igdb.com/v4/screenshots';
     return IGDBGeneral(url, data);
 }
 
 
+// retrieving data
+let retrieveData = async (game) => {
+    // new data object
+    let data = {
+        IGDB_id: -1,
+        aggregated_rating: -1,
+        cover: "",
+        first_release_date: -1,
+        name: "",
+        platforms: [],
+        media: [],
+        description: "",
+        videos: [],
+        official_websites: [],
+        loose_price: -1,
+        complete_price: -1,
+        new_price: -1,
+        uid: -1,
+    }
 
-// IGDBGame("Super Mario Galaxy")
-//     .then( (res) => {
-//         console.log(res);
-//     })
+    // Game
+    let res = await IGDBGame(game);
+    let raw = res[0];
+
+    data.IGDB_id = raw.id;
+    data.aggregated_rating = raw.aggregated_rating;
+    data.cover = raw.cover;
+    data.first_release_date = raw.first_release_date;
+    data.name = raw.name;
+    data.platforms = raw.platforms;
+    data.media = raw.screenshots;
+    data.description = raw.summary;
+    data.videos = raw.videos;
+    data.official_websites = raw.websites;
+
+    // Cover
+    res = await IGDBCover(data.cover);
+    raw = res[0];
+    data.cover = raw;
+
+    // Website
+    res = await IGDBWebsite(data.official_websites);
+    // only save the official sites
+    data.official_websites = res.filter( (website) => website.type == 1);
+
+    // Screenshot
+    res = await IGDBScreenshot(data.media);
+    data.media = res;
+
+    return data;
+}
+
+// testing data retrival
+let game = "Super Mario Odyssey"
+// returns a promise
+let response = retrieveData(game); 
+response
+    .then( (data) => console.log(data))
