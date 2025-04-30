@@ -64,7 +64,7 @@ const IGDBScreenshot = (screenshotIDs) => {
 
 
 // retrieving data
-let retrieveData = async (game) => {
+let retrieveData = async (game, uid) => {
     // new data object
     let data = {
         IGDB_id: -1,
@@ -77,15 +77,29 @@ let retrieveData = async (game) => {
         description: "",
         videos: [],
         official_websites: [],
-        loose_price: -1,
-        complete_price: -1,
-        new_price: -1,
-        uid: -1,
+        loose_price: '',
+        complete_price: '',
+        new_price: '',
+        uid: '',
+    }
+
+    // declaring variables
+    let res, raw;
+
+    // pricing from PriceCharting only if we have a uid
+    if (uid) {
+        res = await pricechartingUID(uid);
+        raw = res.products[0];
+    
+        data.loose_price = raw.price1;
+        data.complete_price = raw.price3;
+        data.new_price = raw.price2;
+        data.uid = uid;
     }
 
     // Game
-    let res = await IGDBGame(game);
-    let raw = res[0];
+    res = await IGDBGame(game);
+    raw = res[0];
 
     data.IGDB_id = raw.id;
     data.aggregated_rating = raw.aggregated_rating;
@@ -116,7 +130,8 @@ let retrieveData = async (game) => {
 }
 
 // testing data retrival
-let game = "Super Mario Odyssey"
+let game = 'Super Mario Odyssey';
+let uid = '045496590741';
 // returns a promise
 let response = retrieveData(game); 
 response
