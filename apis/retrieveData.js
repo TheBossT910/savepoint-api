@@ -19,7 +19,7 @@ function slugify(gameName) {
 }
 
 
-// getting data when we have upc
+// getting data when we have upc/slug
 const retrieveData = async (uid) => {
     let res, raw;
 
@@ -68,18 +68,20 @@ const retrieveData = async (uid) => {
     return data;
 }
 
-// getting data from search
+// getting slug from search
 const retrieveSearch = async (search) => {
     let res = await rawg.RAWGSearch(search, true);
     let raw = res.results[0];
     return raw.slug;
 }
 
+module.exports = { retrieveData, retrieveSearch };
+
 // testing
-let rawgid = "58779";
+// let rawgid = "58779";
 // let upc = "093155176119";    // Starfield
-let upc = "045496590741";    // SMO
-let search = "Starfield";
+// let upc = "045496590741";    // SMO
+// let search = "Starfield";
 
 // retrieveData(upc)
 //     .then( (res) => console.log(res) );
