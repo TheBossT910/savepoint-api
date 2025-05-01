@@ -1,6 +1,7 @@
 // Taha Rashid
 // April 30, 2025
 
+const api = require('./igdb')
 const express = require('express');
 const app = express();
 const PORT = 8080;
@@ -17,12 +18,11 @@ app.listen(
 // DELETE: Delete
 
 
-// GET /test: testing route
-app.get('/test', (req, res) => {
-    const data = {
-        message: "Hello, world!",
-        year: 2025
-    };
+// GET /game/:uid
+app.get('/game/:uid', (req, res) => {
+    let { uid } = req.params
 
-    res.status(200).send( data );
+    let response = api.retrieveData(uid); 
+    response
+        .then( (data) => res.status(200).send( data ));
 });
