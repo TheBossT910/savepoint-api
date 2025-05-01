@@ -1,6 +1,6 @@
 // Taha Rashid
 // April 30, 2025
-// Accessing IGDB API
+// IGDB API
 
 const credentials = require('./credentials');
 const axios = require('axios');
