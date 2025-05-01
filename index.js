@@ -22,7 +22,7 @@ app.listen(
 app.get('/games/upc/:upc', (req, res) => {
     let { upc } = req.params
 
-    let response = api.retrieveData(upc);
+    let response = api.retrieveData(upc, false);
     response
         .then( (data) => res.status(200).send( data ));
 });
@@ -30,10 +30,9 @@ app.get('/games/upc/:upc', (req, res) => {
 // get game from search, query is q
 app.get('/games/search', (req, res) => {
     let search = req.query.q;
-    console.log(search);
 
     let response = api.retrieveSearch(search);
     response
-        .then( (slug) => api.retrieveData(slug) )
+        .then( (slug) => api.retrieveData(slug, true) )
         .then( (data) => res.status(200).send( data ));
 });

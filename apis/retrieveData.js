@@ -7,6 +7,9 @@ const rawg = require('./rawg');
 const pricecharting = require('./pricecharting');
 const igdb = require('./igdb')
 
+// fuzzy search library
+const Fuse = require('fuse.js')
+
 // converts game name to slug
 // courtesy of ChatGPT (will make own function later, just need to have working product first!)
 function slugify(gameName) {
@@ -18,9 +21,22 @@ function slugify(gameName) {
       .replace(/-+/g, '-');         // remove duplicate hyphens
 }
 
+// returns the index in the list with the closet search match
+const fuzzySearch = (list, search) => {
+    const options = {
+        includeScore: true,
+        keys: ['productName']
+    }
+
+    const fuse = new Fuse(list, options);
+    const result = fuse.search(search);
+    return result[0].refIndex;
+}
+
+
 
 // getting data when we have upc/slug
-const retrieveData = async (uid) => {
+const retrieveData = async (uid, isSlug) => {
     let res, raw;
 
     // data object
@@ -40,12 +56,26 @@ const retrieveData = async (uid) => {
 
     // getting prices and slug
     res = await pricecharting.pricechartingUID(uid)
-    raw = res.products[0];
+    let products = res.products;
+
+    if (isSlug) {
+        // match the closest name
+        let matchedIndex = fuzzySearch(products, uid);
+        raw = products[matchedIndex];
+
+        // uid is already the slug
+        data.slug = uid;
+    } else {
+        // select the first item
+        raw = products[0];
+
+        // need to get the slug
+        data.slug = slugify(raw.productName);
+    }
+
     data.loose_price = raw.price1;
     data.complete_price = raw.price3;
     data.new_price = raw.price2;
-
-    data.slug = slugify(raw.productName);
 
     // getting game data
     res = await igdb.IGDBGame(data.slug)
@@ -92,9 +122,3 @@ module.exports = { retrieveData, retrieveSearch };
 //         return retrieveData(res);
 //     })
 //     .then( (res) => console.log(res) );
-
-
-
-
-
-
