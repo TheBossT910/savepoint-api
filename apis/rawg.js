@@ -33,4 +33,7 @@ const RAWGGame = async (gameID) => {
     return response.data;
 }
 
+// exporting functions
+module.exports = { RAWGSearch, RAWGGame };
+
 
