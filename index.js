@@ -1,7 +1,7 @@
 // Taha Rashid
 // April 30, 2025
 
-const api = require('./igdb')
+const api = require('./apis/retrieveData')
 const express = require('express');
 const app = express();
 const PORT = 8080;
@@ -18,11 +18,22 @@ app.listen(
 // DELETE: Delete
 
 
-// GET /game/:uid
-app.get('/game/:uid', (req, res) => {
-    let { uid } = req.params
+// get game from upc
+app.get('/games/upc/:upc', (req, res) => {
+    let { upc } = req.params
 
-    let response = api.retrieveData(uid); 
+    let response = api.retrieveData(upc);
     response
+        .then( (data) => res.status(200).send( data ));
+});
+
+// get game from search, query is q
+app.get('/games/search', (req, res) => {
+    let search = req.query.q;
+    console.log(search);
+
+    let response = api.retrieveSearch(search);
+    response
+        .then( (slug) => api.retrieveData(slug) )
         .then( (data) => res.status(200).send( data ));
 });
