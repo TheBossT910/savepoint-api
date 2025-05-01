@@ -2,7 +2,7 @@
 // April 30, 2025
 // IGDB API
 
-const credentials = require('./credentials');
+const credentials = require('../credentials');
 const axios = require('axios');
 
 // functions to get data from APIs

@@ -2,7 +2,7 @@
 // May 1, 2025
 // RAWG API
 
-const credentials = require('./credentials');
+const credentials = require('../credentials');
 const axios = require('axios');
 
 // RAWG search
