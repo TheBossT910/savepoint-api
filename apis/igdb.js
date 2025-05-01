@@ -5,21 +5,6 @@
 const credentials = require('../credentials');
 const axios = require('axios');
 
-// functions to get data from APIs
-// gets pricing data of game using game's UID (barecode id)
-const pricechartingUID = async (uid) => {
-    const config = {
-        method: 'GET',
-        url: `https://www.pricecharting.com/search-products?type=videogames&q=${uid}`,
-        headers: {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
-        },
-    };
-
-    const response = await axios.request(config);
-    return response.data;
-}
-
 // general function, used by other IGDB functions
 const IGDBGeneral = async (url, data) => {
     let config = {
@@ -39,8 +24,8 @@ const IGDBGeneral = async (url, data) => {
     return response.data;
 }
 
-const IGDBGame = (game) => {
-    let data = `fields aggregated_rating,cover,first_release_date,name,platforms,screenshots,summary,url,videos,websites; where name = "${game}" & game_type = 0;`;
+const IGDBGame = (slug) => {
+    let data = `fields aggregated_rating,cover,first_release_date,name,platforms,screenshots,summary,url,videos,websites; where slug = "${slug}";`;
     let url = 'https://api.igdb.com/v4/games';
     return IGDBGeneral(url, data);
 }
@@ -63,77 +48,79 @@ const IGDBScreenshot = (screenshotIDs) => {
     return IGDBGeneral(url, data);
 }
 
+module.exports = { IGDBGame, IGDBCover, IGDBWebsite, IGDBScreenshot };
 
-// retrieving data
-let retrieveData = async (game, uid) => {
-    // new data object
-    let data = {
-        IGDB_id: -1,
-        aggregated_rating: -1,
-        cover: "",
-        first_release_date: -1,
-        name: "",
-        platforms: [],
-        media: [],
-        description: "",
-        videos: [],
-        official_websites: [],
-        loose_price: '',
-        complete_price: '',
-        new_price: '',
-        uid: '',
-    }
 
-    // declaring variables
-    let res, raw;
+// // retrieving data
+// let retrieveData = async (game, uid) => {
+//     // new data object
+//     let data = {
+//         IGDB_id: -1,
+//         aggregated_rating: -1,
+//         cover: "",
+//         first_release_date: -1,
+//         name: "",
+//         platforms: [],
+//         media: [],
+//         description: "",
+//         videos: [],
+//         official_websites: [],
+//         loose_price: '',
+//         complete_price: '',
+//         new_price: '',
+//         uid: '',
+//     }
 
-    // pricing from PriceCharting only if we have a uid
-    if (uid) {
-        res = await pricechartingUID(uid);
-        raw = res.products[0];
+//     // declaring variables
+//     let res, raw;
+
+//     // pricing from PriceCharting only if we have a uid
+//     if (uid) {
+//         res = await pricechartingUID(uid);
+//         raw = res.products[0];
     
-        data.loose_price = raw.price1;
-        data.complete_price = raw.price3;
-        data.new_price = raw.price2;
-        data.uid = uid;
-    }
+//         data.loose_price = raw.price1;
+//         data.complete_price = raw.price3;
+//         data.new_price = raw.price2;
+//         data.uid = uid;
+//     }
 
-    // Game
-    res = await IGDBGame(game);
-    raw = res[0];
+//     // Game
+//     res = await IGDBGame(game);
+//     raw = res[0];
 
-    data.IGDB_id = raw.id;
-    data.aggregated_rating = raw.aggregated_rating;
-    data.cover = raw.cover;
-    data.first_release_date = raw.first_release_date;
-    data.name = raw.name;
-    data.platforms = raw.platforms;
-    data.media = raw.screenshots;
-    data.description = raw.summary;
-    data.videos = raw.videos;
-    data.official_websites = raw.websites;
+//     data.IGDB_id = raw.id;
+//     data.aggregated_rating = raw.aggregated_rating;
+//     data.cover = raw.cover;
+//     data.first_release_date = raw.first_release_date;
+//     data.name = raw.name;
+//     data.platforms = raw.platforms;
+//     data.media = raw.screenshots;
+//     data.description = raw.summary;
+//     data.videos = raw.videos;
+//     data.official_websites = raw.websites;
 
-    // Cover
-    res = await IGDBCover(data.cover);
-    raw = res[0];
-    data.cover = raw;
+//     // Cover
+//     res = await IGDBCover(data.cover);
+//     raw = res[0];
+//     data.cover = raw;
 
-    // Website
-    res = await IGDBWebsite(data.official_websites);
-    // only save the official sites
-    data.official_websites = res.filter( (website) => website.type == 1);
+//     // Website
+//     res = await IGDBWebsite(data.official_websites);
+//     // only save the official sites
+//     data.official_websites = res.filter( (website) => website.type == 1);
 
-    // Screenshot
-    res = await IGDBScreenshot(data.media);
-    data.media = res;
+//     // Screenshot
+//     res = await IGDBScreenshot(data.media);
+//     data.media = res;
 
-    return data;
-}
+//     return data;
+// }
 
-// testing data retrival
-let game = 'Super Mario Odyssey';
-let uid = '045496590741';
-// returns a promise
-let response = retrieveData(game, uid); 
-response
-    .then( (data) => console.log(data))
+// // testing data retrival
+// let game = 'Super Mario Odyssey';
+// let uid = '045496590741';
+// // returns a promise
+// let response = retrieveData(game, uid); 
+// response
+//     .then( (data) => console.log(data))
