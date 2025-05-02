@@ -5,6 +5,8 @@
 const credentials = require('../credentials');
 const axios = require('axios');
 
+const dataLimit = 50;
+
 // general function, used by other IGDB functions
 const IGDBGeneral = async (url, data) => {
     let config = {
@@ -25,29 +27,30 @@ const IGDBGeneral = async (url, data) => {
 }
 
 // Specific game's details
-const IGDBGame = () => {
-    let data = 'fields aggregated_rating,cover.url,first_release_date,name,platforms.name,screenshots.url,summary,url,videos.video_id,websites.url; where slug = "the-legend-of-zelda-tears-of-the-kingdom";';
+const IGDBGame = (slug) => {
+    let data = `fields aggregated_rating,cover.url,first_release_date,name,platforms.name,screenshots.url,summary,url,videos.video_id,websites.url; where slug = "${slug}";`;
     let url = 'https://api.igdb.com/v4/games';
     return IGDBGeneral(url, data);
 }
 
 // Popular games
 const IGDBPopular = () => {
-    let data = 'fields aggregated_rating,cover,first_release_date,name,platforms.name,screenshots.url,summary,url,videos.video_id,websites.url; sort total_rating_count desc; where total_rating_count != null; limit 50;';
+    let data = `fields aggregated_rating,cover,first_release_date,name,platforms.name,screenshots.url,summary,url,videos.video_id,websites.url; sort total_rating_count desc; where total_rating_count != null; limit ${dataLimit};`;
     let url = 'https://api.igdb.com/v4/games';
     return IGDBGeneral(url, data);
 }
 
 // Trending games
 const IGDBTrending = () => {
-    let data = 'fields aggregated_rating,cover,first_release_date,name,platforms.name,screenshots.url,summary,url,videos.video_id,websites.url; where first_release_date > 1641094034 & (follows > 10 | total_rating_count > 20); sort total_rating_count desc; limit 50;';
+    let currentDate = "1641094034"; // temp, represented as Unix time
+    let data = `fields aggregated_rating,cover,first_release_date,name,platforms.name,screenshots.url,summary,url,videos.video_id,websites.url; where first_release_date > ${currentDate} & (follows > 10 | total_rating_count > 20); sort total_rating_count desc; limit ${dataLimit};`;
     let url = 'https://api.igdb.com/v4/games';
     return IGDBGeneral(url, data);
 }
 
 // Highest rated games for a specific platform
-const IGDBHighestRated = () => {
-    let data = 'fields aggregated_rating,cover,first_release_date,name,platforms.name,screenshots.url,summary,url,videos.video_id,websites.url; sort total_rating_count desc; where platforms.name = "Nintendo Switch" & total_rating_count != null; limit 50;';
+const IGDBHighestRated = (platform) => {
+    let data = `fields aggregated_rating,cover,first_release_date,name,platforms.name,screenshots.url,summary,url,videos.video_id,websites.url; sort total_rating_count desc; where platforms.name = "${platform}" & total_rating_count != null; limit ${dataLimit};`;
     let url = 'https://api.igdb.com/v4/games';
     return IGDBGeneral(url, data);
 }
