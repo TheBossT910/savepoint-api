@@ -21,6 +21,22 @@ function slugify(gameName) {
       .replace(/-+/g, '-');         // remove duplicate hyphens
 }
 
+// converts Unix time to timestamp
+// Courtesy of Stack Overflow, https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
+function timeConverter(UNIX_timestamp){
+    let a = new Date(UNIX_timestamp * 1000);
+    let months = ['1','2','3','4','5','6','7','8','9','10','11','12'];
+    let year = a.getFullYear();
+    let month = months[a.getMonth()];
+    let date = a.getDate();
+    let hour = a.getHours();
+    let min = a.getMinutes();
+    let sec = a.getSeconds();
+    // var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+    let time = `${year}-${month}-${date}`
+    return time;
+  }
+
 // returns the index in the list with the closet search match
 const fuzzySearch = (list, search) => {
     const options = {
@@ -31,6 +47,23 @@ const fuzzySearch = (list, search) => {
     const fuse = new Fuse(list, options);
     const result = fuse.search(search);
     return result[0].refIndex;
+}
+
+// helper function used by gamesPopular, gamesTrending, gamesHighestRated
+const gamesGeneral =  (res) => {
+    let raw = Array.from( res, (item) => {
+        let data = {
+            name: item.name,
+            slug: item.slug,
+            release_date: timeConverter(item.first_release_date),
+            image: 'https:' + item.cover.url.replace('t_thumb', 't_1080p'),
+            rating: item.aggregated_rating,
+        };
+        return data;
+    })
+
+    // return all formatted results
+    return raw;
 }
 
 
@@ -83,7 +116,7 @@ const retrieveData = async (uid, isSlug) => {
     raw = res[0];
     data.name = raw.name;
     data.description = raw.summary;
-    data.release_date = raw.first_release_date;
+    data.release_date = timeConverter(raw.first_release_date);
 
     // getting cover
     data.cover = 'https:' + raw.cover.url.replace('t_thumb', 't_1080p');
@@ -109,29 +142,6 @@ const retrieveSearch = async (search) => {
 
     // return all formatted results
     return raw;
-}
-
-// TODO: format these into data object. Currently, we are simply sending the raw result from the IGDB API itself!
-// These don't need all data. We just need cover image, name, platform(?) since these are simply just displayed
-// the other data (retrieveData) are actual results when we want to look at the details of a specific show
-
-
-// function used by gamesPopular, gamesTrending, gamesHighestRated
-const gamesGeneral =  (res) => {
-    let raw = Array.from( res, (item) => {
-        let data = {
-            name: item.name,
-            slug: item.slug,
-            release_date: item.first_release_date,
-            image: 'https:' + item.cover.url.replace('t_thumb', 't_1080p'),
-            rating: item.aggregated_rating,
-        };
-        return data;
-    })
-
-    // return all formatted results
-    return raw;
-
 }
 
 // getting popular games
