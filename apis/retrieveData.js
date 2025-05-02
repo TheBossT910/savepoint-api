@@ -97,7 +97,7 @@ const retrieveData = async (uid, isSlug) => {
 // getting slug from search
 const retrieveSearch = async (search) => {
     let res = await rawg.RAWGSearch(search, true);
-    let raw = Array.from( res.results, async (item) => {
+    let raw = Array.from( res.results, (item) => {
         let data = {
             name: item.name,
             slug: item.slug,
@@ -115,19 +115,44 @@ const retrieveSearch = async (search) => {
 // These don't need all data. We just need cover image, name, platform(?) since these are simply just displayed
 // the other data (retrieveData) are actual results when we want to look at the details of a specific show
 
+
+// function used by gamesPopular, gamesTrending, gamesHighestRated
+const gamesGeneral =  (res) => {
+    let raw = Array.from( res, (item) => {
+        let data = {
+            name: item.name,
+            slug: item.slug,
+            release_date: item.first_release_date,
+            image: 'https:' + item.cover.url.replace('t_thumb', 't_1080p'),
+            rating: item.aggregated_rating,
+        };
+        return data;
+    })
+
+    // return all formatted results
+    return raw;
+
+}
+
 // getting popular games
-const gamesPopular = () => {
-    return igdb.IGDBPopular();
+const gamesPopular = async () => {
+    let res =  await igdb.IGDBPopular();
+    let raw = gamesGeneral(res);
+    return raw;
 }
 
 // getting trending games
-const gamesTrending = () => {
-    return igdb.IGDBTrending();
+const gamesTrending = async () => {
+    let res =  await igdb.IGDBTrending();
+    let raw = gamesGeneral(res);
+    return raw;
 }
 
 // getting highest rated games for specified platform
-const gamesHighestRated = (platform) => {
-    return igdb.IGDBHighestRated(platform);
+const gamesHighestRated = async (platform) => {
+    let res =  await igdb.IGDBHighestRated(platform);
+    let raw = gamesGeneral(res);
+    return raw;
 }
 
 module.exports = { retrieveData, retrieveSearch, gamesPopular, gamesTrending, gamesHighestRated };
@@ -136,10 +161,13 @@ module.exports = { retrieveData, retrieveSearch, gamesPopular, gamesTrending, ga
 // let rawgid = "58779";
 // let upc = "093155176119";    // Starfield
 // let upc = "045496590741";    // SMO
-let search = "Super Mario Odyssey";
+// let search = "Super Mario Odyssey";
 
 // retrieveData(upc)
 //     .then( (res) => console.log(res) );
 
-retrieveSearch(search)
-    .then( (res) => console.log(res) );
+// retrieveSearch(search)
+//     .then( (res) => console.log(res) );
+
+// gamesTrending()
+//     .then( (res) => console.log(res) );
