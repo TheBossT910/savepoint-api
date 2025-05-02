@@ -6,10 +6,10 @@
 const rawg = require('./rawg');
 const pricecharting = require('./pricecharting');
 const igdb = require('./igdb')
-const db = require('../database/db.mjs');
+const db = require('../database/db');
 
 // fuzzy search library
-const Fuse = require('fuse.js')
+const Fuse = require('fuse.js');
 
 // converts game name to slug
 // courtesy of ChatGPT (will make own function later, just need to have working product first!)
@@ -145,6 +145,38 @@ const retrieveSearch = async (search) => {
     return raw;
 }
 
+// get data from DB
+const retrieveDB = async (slug, upc) => {
+    // set to sentinel value if no upc found
+    if (upc == '') upc = '-1';
+
+    // check if the db has this entry
+    let res = await db.databaseRead(slug, upc);
+
+    // get data and create entry if entry not found
+    if (res == null || res.length == 0) {
+        console.log('creating entry');
+
+        // create entry
+        // if we have upc, use upc
+        if (upc != -1) {
+             res = await retrieveData(upc, false);
+        } else {    // else use slug
+            res = await retrieveData(slug, true);
+        }
+
+        // add data to database
+        await db.databaseWrite({
+            data: res,
+            slug: res.slug,
+            upc: upc != '-1' ? upc : null
+        });
+    }
+
+    // return our data
+    return res;
+};
+
 // getting popular games
 const gamesPopular = async () => {
     let res =  await igdb.IGDBPopular();
@@ -166,19 +198,23 @@ const gamesHighestRated = async (platform) => {
     return raw;
 }
 
-module.exports = { retrieveData, retrieveSearch, gamesPopular, gamesTrending, gamesHighestRated };
+module.exports = { retrieveData, retrieveSearch, retrieveDB, gamesPopular, gamesTrending, gamesHighestRated };
 
 // testing
 // let rawgid = "58779";
 // let upc = "093155176119";    // Starfield
 // let upc = "045496590741";    // SMO
 // let search = "Super Mario Odyssey";
+// let upc = 'super-mario-odyssey';
 
-// retrieveData(upc)
+// retrieveData(upc, true)
 //     .then( (res) => console.log(res) );
 
 // retrieveSearch(search)
 //     .then( (res) => console.log(res) );
 
 // gamesTrending()
+//     .then( (res) => console.log(res) );
+
+// retrieveDB('super-mario-odyssey', '')
 //     .then( (res) => console.log(res) );
