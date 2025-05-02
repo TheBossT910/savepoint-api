@@ -48,4 +48,32 @@ const IGDBScreenshot = (screenshotIDs) => {
     return IGDBGeneral(url, data);
 }
 
+// Specific game's details
+const IGDBGame2 = () => {
+    let data = 'fields aggregated_rating,cover,first_release_date,name,platforms.name,screenshots.url,summary,url,videos.video_id,websites.url; where slug = "the-legend-of-zelda-tears-of-the-kingdom";';
+    let url = 'https://api.igdb.com/v4/games';
+    return IGDBGeneral(url, data);
+}
+
+// Popular games
+const IGDBPopular = () => {
+    let data = 'fields aggregated_rating,cover,first_release_date,name,platforms.name,screenshots.url,summary,url,videos.video_id,websites.url; sort total_rating_count desc; where total_rating_count != null; limit 50;';
+    let url = 'https://api.igdb.com/v4/games';
+    return IGDBGeneral(url, data);
+}
+
+// Trending games
+const IGDBTrending = () => {
+    let data = 'fields aggregated_rating,cover,first_release_date,name,platforms.name,screenshots.url,summary,url,videos.video_id,websites.url; where first_release_date > 1641094034 & (follows > 10 | total_rating_count > 20); sort total_rating_count desc; limit 50;';
+    let url = 'https://api.igdb.com/v4/games';
+    return IGDBGeneral(url, data);
+}
+
+// Highest rated games for a specific platform
+const IGDBHighestRated = () => {
+    let data = 'fields aggregated_rating,cover,first_release_date,name,platforms.name,screenshots.url,summary,url,videos.video_id,websites.url; sort total_rating_count desc; where platforms.name = "Nintendo Switch" & total_rating_count != null; limit 50;';
+    let url = 'https://api.igdb.com/v4/games';
+    return IGDBGeneral(url, data);
+}
+
 module.exports = { IGDBGame, IGDBCover, IGDBWebsite, IGDBScreenshot };
