@@ -78,7 +78,7 @@ const retrieveData = async (uid, isSlug) => {
     data.new_price = raw.price2;
 
     // getting game data
-    res = await igdb.IGDBGame2(data.slug)
+    res = await igdb.IGDBGame(data.slug)
     raw = res[0];
     data.name = raw.name;
     data.description = raw.summary;
