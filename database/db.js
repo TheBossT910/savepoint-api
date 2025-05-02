@@ -2,8 +2,8 @@
 // May 2, 2025
 // testing out Supabase
 
-import 'dotenv/config'
-import { createClient } from '@supabase/supabase-js';
+require('dotenv').config()
+const { createClient } = require('@supabase/supabase-js');
 
 // Create a single supabase client for interacting with your database
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
@@ -40,7 +40,14 @@ const databaseRead = async (slug = '', upc = '-1') => {
   return data;
 }
 
-module.exports = { databaseRead };
+// writes obj to database. If an obj with the same slug exists, it overwrites that obj
+const databaseWrite = async (obj) => {
+  const { errorWrite } = await supabase
+    .from('games')
+    .upsert( obj, { onConflict: 'slug' } );
+}
+
+module.exports = { databaseRead, databaseWrite };
 
 // testing
 // databaseRead('taha-rashid', '')
