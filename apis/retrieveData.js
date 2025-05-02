@@ -100,7 +100,25 @@ const retrieveSearch = async (search) => {
     return raw.slug;
 }
 
-module.exports = { retrieveData, retrieveSearch };
+// TODO: format these into data object. Currently, we are simply sending the raw result from the IGDB API itself!
+// We should restructure our code so that there is a seperate function that we can feed our raw json into to create the function
+
+// getting popular games
+const gamesPopular = () => {
+    return igdb.IGDBPopular();
+}
+
+// getting trending games
+const gamesTrending = () => {
+    return igdb.IGDBTrending();
+}
+
+// getting highest rated games for specified platform
+const gamesHighestRated = (platform) => {
+    return igdb.IGDBHighestRated(platform);
+}
+
+module.exports = { retrieveData, retrieveSearch, gamesPopular, gamesTrending, gamesHighestRated };
 
 // testing
 // let rawgid = "58779";

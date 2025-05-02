@@ -2,6 +2,7 @@
 // April 30, 2025
 // API accesss
 
+
 const api = require('./apis/retrieveData')
 const express = require('express');
 const app = express();
@@ -38,13 +39,27 @@ app.get('/games/search', (req, res) => {
         .then( (data) => res.status(200).send( data ));
 });
 
-
+// get most popular games of all time
 app.get('/games/lists/popular', (req, res) => {
-    return res.status(501).send("games/popular not implemented yet");
+    let response = api.gamesPopular();
+    response
+        .then( (data) => res.status(501).send(data) );
 });
 
+// get currently popular (trending) games
 app.get('/games/lists/trending', (req, res) => {
-    return res.status(501).send("games/trending not implemented yet");
+    let response = api.gamesTrending();
+    response
+        .then( (data) => res.status(501).send(data) );
+});
+
+// get highest (most) rated games for specified platform
+// TODO: make into 
+app.get('/games/lists/highest-rated', (req, res) => {
+    let platform = req.query.platform
+    let response = api.gamesHighestRated(platform);
+    response
+        .then( (data) => res.status(501).send(data) );
 });
 
 // get users
