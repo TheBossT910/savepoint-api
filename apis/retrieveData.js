@@ -104,7 +104,7 @@ const retrieveSearch = async (search) => {
             name: item.name,
             slug: item.slug,
             release_date: item.released,
-            cover: item.background_image,
+            image: item.background_image,
         };
         return data;
     });
