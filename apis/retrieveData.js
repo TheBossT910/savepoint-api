@@ -95,10 +95,8 @@ const retrieveData = async (uid, isSlug) => {
 }
 
 // getting slug from search
-// TODO: change so we only show minimal data to API. Instead of getting exact result, show (less precise), but all results like you would in a search bar
 const retrieveSearch = async (search) => {
     let res = await rawg.RAWGSearch(search, true);
-    // console.log(res);
     let raw = Array.from( res.results, async (item) => {
         let data = {
             name: item.name,
@@ -109,6 +107,7 @@ const retrieveSearch = async (search) => {
         return data;
     });
 
+    // return all formatted results
     return raw;
 }
 
