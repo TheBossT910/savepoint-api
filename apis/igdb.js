@@ -24,30 +24,6 @@ const IGDBGeneral = async (url, data) => {
     return response.data;
 }
 
-const IGDBGame = (slug) => {
-    let data = `fields aggregated_rating,cover,first_release_date,name,platforms,screenshots,summary,url,videos,websites; where slug = "${slug}";`;
-    let url = 'https://api.igdb.com/v4/games';
-    return IGDBGeneral(url, data);
-}
-
-const IGDBCover = (gameID) => {
-    let data = `fields url, width, height; where id=${gameID};`;
-    let url = 'https://api.igdb.com/v4/covers';
-    return IGDBGeneral(url, data);
-}
-
-const IGDBWebsite = (websiteIDs) => {
-    let data = `fields url, type; where id = (${websiteIDs.join(", ")});`;
-    let url = 'https://api.igdb.com/v4/websites';
-    return IGDBGeneral(url, data);
-}
-
-const IGDBScreenshot = (screenshotIDs) => {
-    let data = `  fields url, width, height; where id = (${screenshotIDs.join(", ")});`;
-    let url = 'https://api.igdb.com/v4/screenshots';
-    return IGDBGeneral(url, data);
-}
-
 // Specific game's details
 const IGDBGame2 = () => {
     let data = 'fields aggregated_rating,cover.url,first_release_date,name,platforms.name,screenshots.url,summary,url,videos.video_id,websites.url; where slug = "the-legend-of-zelda-tears-of-the-kingdom";';
@@ -76,4 +52,4 @@ const IGDBHighestRated = () => {
     return IGDBGeneral(url, data);
 }
 
-module.exports = { IGDBGame2 };
+module.exports = { IGDBGame2, IGDBPopular, IGDBTrending, IGDBHighestRated };
