@@ -101,7 +101,8 @@ const retrieveSearch = async (search) => {
 }
 
 // TODO: format these into data object. Currently, we are simply sending the raw result from the IGDB API itself!
-// We should restructure our code so that there is a seperate function that we can feed our raw json into to create the function
+// These don't need all data. We just need cover image, name, platform(?) since these are simply just displayed
+// the other data (retrieveData and retrieveSearch) are actual results when we want to look at the details of a specific show
 
 // getting popular games
 const gamesPopular = () => {
