@@ -2,9 +2,10 @@
 // April 30, 2025
 // IGDB API
 
-const credentials = require('../credentials');
-const axios = require('axios');
+// importing .env variables
+require('dotenv').config()
 
+const axios = require('axios');
 const dataLimit = 50;
 
 // general function, used by other IGDB functions
@@ -14,8 +15,8 @@ const IGDBGeneral = async (url, data) => {
         maxBodyLength: Infinity,
         url: url,
         headers: { 
-          'Client-ID': credentials.ClientID, 
-          'Authorization': credentials.Authorization, 
+          'Client-ID': process.env.CLIENT_ID, 
+          'Authorization': process.env.AUTHORIZATION, 
           'Content-Type': 'application/raw', 
           'Cookie': '__cf_bm=PlCl1o47o2P4UNo9HUWNNT47O0HAMD0T53k4KrapxgE-1746040815-1.0.1.1-iEsmbKVv10qhLevW8XN6EbN2kfptZz5eaOox9fet3tYxaQe_IWYCPCWX0.avZefiHBwTBFyVILe67hIJrrr.d3Urf5yfFbPthwQh0gJdGQM'
         },

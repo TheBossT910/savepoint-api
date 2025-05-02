@@ -2,7 +2,8 @@
 // May 1, 2025
 // RAWG API
 
-const credentials = require('../credentials');
+// importing .env variables
+require('dotenv').config()
 const axios = require('axios');
 
 // RAWG search
@@ -11,7 +12,7 @@ const RAWGSearch = async (search, isPrecise) => {
     let config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: `https://api.rawg.io/api/games?key=${credentials.RAWGKey}&search=${search}&search_precise=${isPrecise}`,
+        url: `https://api.rawg.io/api/games?key=${process.env.RAWG_KEY}&search=${search}&search_precise=${isPrecise}`,
         headers: { }
       };
 
@@ -25,7 +26,7 @@ const RAWGGame = async (gameID) => {
     let config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: `https://api.rawg.io/api/games/${gameID}?key=${credentials.RAWGKey}`,
+        url: `https://api.rawg.io/api/games/${gameID}?key=${process.env.RAWG_KEY}`,
         headers: { }
       };
 
