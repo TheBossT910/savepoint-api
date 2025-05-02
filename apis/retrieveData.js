@@ -49,6 +49,7 @@ const retrieveData = async (uid, isSlug) => {
         media: [],
         // website: "", 
         // metacritic_rating: "",
+        // platforms: [],
         loose_price: '',
         complete_price: '',
         new_price: '',
@@ -97,8 +98,18 @@ const retrieveData = async (uid, isSlug) => {
 // TODO: change so we only show minimal data to API. Instead of getting exact result, show (less precise), but all results like you would in a search bar
 const retrieveSearch = async (search) => {
     let res = await rawg.RAWGSearch(search, true);
-    let raw = res.results[0];
-    return res.results;
+    // console.log(res);
+    let raw = Array.from( res.results, async (item) => {
+        let data = {
+            name: item.name,
+            slug: item.slug,
+            release_date: item.released,
+            cover: item.background_image,
+        };
+        return data;
+    });
+
+    return raw;
 }
 
 // TODO: format these into data object. Currently, we are simply sending the raw result from the IGDB API itself!
@@ -126,10 +137,10 @@ module.exports = { retrieveData, retrieveSearch, gamesPopular, gamesTrending, ga
 // let rawgid = "58779";
 // let upc = "093155176119";    // Starfield
 // let upc = "045496590741";    // SMO
-// let search = "mario odyssey";
+let search = "Super Mario Odyssey";
 
 // retrieveData(upc)
 //     .then( (res) => console.log(res) );
 
-// retrieveSearch(search)
-//     .then( (res) => console.log(res) );
+retrieveSearch(search)
+    .then( (res) => console.log(res) );
