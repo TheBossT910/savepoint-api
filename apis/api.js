@@ -171,10 +171,15 @@ const retrieveDB = async (slug, upc) => {
             slug: res.slug,
             upc: upc != '-1' ? upc : null
         });
+
+        // return data we just scrapped
+        return res;
     }
 
-    // return our data
-    return res;
+    // return data if there was matching data in the database
+    if (res.length > 0) return res[0];
+    // else return empty object
+    return {};
 };
 
 // getting popular games
