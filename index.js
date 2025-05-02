@@ -46,7 +46,8 @@ app.get('/games/db', (req, res) => {
     let slug = req.query.slug;
     let upc = req.query.upc;
 
-    return res.status(501).send("games/db not implemented yet");
+    let response = api.retrieveDB(slug, upc)
+        .then( (data) => res.status(200).send(data) );
 });
 
 // get most popular games of all time
