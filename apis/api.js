@@ -67,9 +67,7 @@ const gamesGeneral =  (res) => {
     return raw;
 }
 
-
-
-// getting data when we have upc/slug
+// helper function to get data from external api when we have upc/slug
 const retrieveData = async (uid, isSlug) => {
     let res, raw;
 
@@ -128,6 +126,8 @@ const retrieveData = async (uid, isSlug) => {
     return data;
 }
 
+
+
 // getting slug from search
 const retrieveSearch = async (search) => {
     let res = await rawg.RAWGSearch(search, true);
@@ -151,7 +151,7 @@ const retrieveDB = async (slug, upc) => {
     if (upc == '') upc = '-1';
 
     // check if the db has this entry
-    let res = await db.databaseRead(slug, upc);
+    let res = await db.databaseReadGames(slug, upc);
 
     // get data and create entry if entry not found
     if (res == null || res.length == 0) {
@@ -166,7 +166,7 @@ const retrieveDB = async (slug, upc) => {
         }
 
         // add data to database
-        await db.databaseWrite({
+        await db.databaseWriteGames({
             data: res,
             slug: res.slug,
             upc: upc != '-1' ? upc : null
@@ -203,7 +203,7 @@ const gamesHighestRated = async (platform) => {
     return raw;
 }
 
-module.exports = { retrieveData, retrieveSearch, retrieveDB, gamesPopular, gamesTrending, gamesHighestRated };
+module.exports = { retrieveSearch, retrieveDB, gamesPopular, gamesTrending, gamesHighestRated };
 
 // testing
 // let rawgid = "58779";

@@ -22,6 +22,7 @@ const RAWGSearch = async (search, isPrecise) => {
 
 // RAWG game details
 // Assumes we already know gameID
+// DEPRECATED
 const RAWGGame = async (gameID) => {
     let config = {
         method: 'get',
@@ -35,6 +36,6 @@ const RAWGGame = async (gameID) => {
 }
 
 // exporting functions
-module.exports = { RAWGSearch, RAWGGame };
+module.exports = { RAWGSearch };
 
 
