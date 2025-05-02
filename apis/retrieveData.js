@@ -78,22 +78,17 @@ const retrieveData = async (uid, isSlug) => {
     data.new_price = raw.price2;
 
     // getting game data
-    res = await igdb.IGDBGame(data.slug)
+    res = await igdb.IGDBGame2(data.slug)
     raw = res[0];
     data.name = raw.name;
     data.description = raw.summary;
     data.release_date = raw.first_release_date;
-    data.cover = raw.cover;
-    data.media = raw.screenshots;
 
     // getting cover
-    res = await igdb.IGDBCover(data.cover);
-    raw = res[0];
-    data.cover = 'https:' + raw.url.replace('t_thumb', 't_1080p');
+    data.cover = 'https:' + raw.cover.url.replace('t_thumb', 't_1080p');
 
     // getting media
-    res = await igdb.IGDBScreenshot(data.media);
-    data.media = Array.from(res, (item) => 'https:' + item.url.replace('t_thumb', 't_1080p'));
+    data.media = Array.from(raw.screenshots, (item) => 'https:' + item.url.replace('t_thumb', 't_1080p'));
 
     return data;
 }
@@ -110,11 +105,11 @@ module.exports = { retrieveData, retrieveSearch };
 // testing
 // let rawgid = "58779";
 // let upc = "093155176119";    // Starfield
-// let upc = "045496590741";    // SMO
+let upc = "045496590741";    // SMO
 // let search = "Starfield";
 
-// retrieveData(upc)
-//     .then( (res) => console.log(res) );
+retrieveData(upc)
+    .then( (res) => console.log(res) );
 
 // retrieveSearch(search)
 //     .then( (res) => {

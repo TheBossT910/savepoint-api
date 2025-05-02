@@ -76,4 +76,4 @@ const IGDBHighestRated = () => {
     return IGDBGeneral(url, data);
 }
 
-module.exports = { IGDBGame, IGDBCover, IGDBWebsite, IGDBScreenshot };
+module.exports = { IGDBGame2 };
