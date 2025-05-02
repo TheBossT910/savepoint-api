@@ -94,15 +94,16 @@ const retrieveData = async (uid, isSlug) => {
 }
 
 // getting slug from search
+// TODO: change so we only show minimal data to API. Instead of getting exact result, show (less precise), but all results like you would in a search bar
 const retrieveSearch = async (search) => {
     let res = await rawg.RAWGSearch(search, true);
     let raw = res.results[0];
-    return raw.slug;
+    return res.results;
 }
 
 // TODO: format these into data object. Currently, we are simply sending the raw result from the IGDB API itself!
 // These don't need all data. We just need cover image, name, platform(?) since these are simply just displayed
-// the other data (retrieveData and retrieveSearch) are actual results when we want to look at the details of a specific show
+// the other data (retrieveData) are actual results when we want to look at the details of a specific show
 
 // getting popular games
 const gamesPopular = () => {
@@ -125,14 +126,10 @@ module.exports = { retrieveData, retrieveSearch, gamesPopular, gamesTrending, ga
 // let rawgid = "58779";
 // let upc = "093155176119";    // Starfield
 // let upc = "045496590741";    // SMO
-// let search = "Starfield";
+// let search = "mario odyssey";
 
 // retrieveData(upc)
 //     .then( (res) => console.log(res) );
 
 // retrieveSearch(search)
-//     .then( (res) => {
-//         console.log(`Slug is: ${res}`);
-//         return retrieveData(res);
-//     })
 //     .then( (res) => console.log(res) );

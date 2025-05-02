@@ -30,16 +30,17 @@ app.get('/games/upc/:upc', (req, res) => {
 });
 
 // get game from search, query is q
+// TODO: implement fully!
 app.get('/games/search', (req, res) => {
     let search = req.query.q;
 
     let response = api.retrieveSearch(search);
     response
-        .then( (slug) => api.retrieveData(slug, true) )
-        .then( (data) => res.status(200).send( data ));
+        .then( (data) => res.status(501).send( data ));
 });
 
 // get most popular games of all time
+// TODO: implement fully!
 app.get('/games/lists/popular', (req, res) => {
     let response = api.gamesPopular();
     response
@@ -47,6 +48,7 @@ app.get('/games/lists/popular', (req, res) => {
 });
 
 // get currently popular (trending) games
+// TODO: implement fully!
 app.get('/games/lists/trending', (req, res) => {
     let response = api.gamesTrending();
     response
@@ -54,7 +56,7 @@ app.get('/games/lists/trending', (req, res) => {
 });
 
 // get highest (most) rated games for specified platform
-// TODO: make into 
+// TODO: implement fully!
 app.get('/games/lists/highest-rated', (req, res) => {
     let platform = req.query.platform
     let response = api.gamesHighestRated(platform);
