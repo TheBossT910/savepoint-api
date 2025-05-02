@@ -38,6 +38,17 @@ app.get('/games/search', (req, res) => {
         .then( (data) => res.status(200).send( data ));
 });
 
+// get game from database
+// TODO: implement this
+// This will 1. check db for any matching slug/upc, then 2. scrape & add to db if it doesn't exist, 3. return data
+// I think this will replace the current functionality of games/upc
+app.get('/games/db', (req, res) => {
+    let slug = req.query.slug;
+    let upc = req.query.upc;
+
+    return res.status(501).send("games/db not implemented yet");
+});
+
 // get most popular games of all time
 app.get('/games/lists/popular', (req, res) => {
     let response = api.gamesPopular();
