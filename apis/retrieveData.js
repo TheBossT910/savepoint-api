@@ -105,11 +105,11 @@ module.exports = { retrieveData, retrieveSearch };
 // testing
 // let rawgid = "58779";
 // let upc = "093155176119";    // Starfield
-let upc = "045496590741";    // SMO
+// let upc = "045496590741";    // SMO
 // let search = "Starfield";
 
-retrieveData(upc)
-    .then( (res) => console.log(res) );
+// retrieveData(upc)
+//     .then( (res) => console.log(res) );
 
 // retrieveSearch(search)
 //     .then( (res) => {
