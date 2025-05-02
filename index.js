@@ -1,5 +1,6 @@
 // Taha Rashid
 // April 30, 2025
+// API accesss
 
 const api = require('./apis/retrieveData')
 const express = require('express');
@@ -35,4 +36,25 @@ app.get('/games/search', (req, res) => {
     response
         .then( (slug) => api.retrieveData(slug, true) )
         .then( (data) => res.status(200).send( data ));
+});
+
+
+app.get('/games/lists/popular', (req, res) => {
+    return res.status(501).send("games/popular not implemented yet");
+});
+
+app.get('/games/lists/trending', (req, res) => {
+    return res.status(501).send("games/trending not implemented yet");
+});
+
+// get users
+app.get('/users/:id', (req, res) => {
+    let { id } = req.params;
+    return res.status(501).send("users/ not implemented yet");
+});
+
+// get stores
+app.get('/stores/:id', (req, res) => {
+    let { id } = req.params;
+    return res.status(501).send("stores/ not implemented yet");
 });
