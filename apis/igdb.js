@@ -35,7 +35,7 @@ const IGDBGame = (slug) => {
 
 // Popular games
 const IGDBPopular = () => {
-    let data = `fields aggregated_rating,cover,first_release_date,name,platforms.name,screenshots.url,summary,url,videos.video_id,websites.url; sort total_rating_count desc; where total_rating_count != null; limit ${dataLimit};`;
+    let data = `fields aggregated_rating,cover.url,first_release_date,name,platforms.name,screenshots.url,summary,url,videos.video_id,websites.url; sort total_rating_count desc; where total_rating_count != null; limit ${dataLimit};`;
     let url = 'https://api.igdb.com/v4/games';
     return IGDBGeneral(url, data);
 }
@@ -43,14 +43,14 @@ const IGDBPopular = () => {
 // Trending games
 const IGDBTrending = () => {
     let currentDate = "1641094034"; // temp, represented as Unix time
-    let data = `fields aggregated_rating,cover,first_release_date,name,platforms.name,screenshots.url,summary,url,videos.video_id,websites.url; where first_release_date > ${currentDate} & (follows > 10 | total_rating_count > 20); sort total_rating_count desc; limit ${dataLimit};`;
+    let data = `fields aggregated_rating,cover.url,first_release_date,name,platforms.name,screenshots.url,summary,url,videos.video_id,websites.url; where first_release_date > ${currentDate} & (follows > 10 | total_rating_count > 20); sort total_rating_count desc; limit ${dataLimit};`;
     let url = 'https://api.igdb.com/v4/games';
     return IGDBGeneral(url, data);
 }
 
 // Highest rated games for a specific platform
 const IGDBHighestRated = (platform) => {
-    let data = `fields aggregated_rating,cover,first_release_date,name,platforms.name,screenshots.url,summary,url,videos.video_id,websites.url; sort total_rating_count desc; where platforms.name = "${platform}" & total_rating_count != null; limit ${dataLimit};`;
+    let data = `fields aggregated_rating,cove.url,first_release_date,name,platforms.name,screenshots.url,summary,url,videos.video_id,websites.url; sort total_rating_count desc; where platforms.name = "${platform}" & total_rating_count != null; limit ${dataLimit};`;
     let url = 'https://api.igdb.com/v4/games';
     return IGDBGeneral(url, data);
 }
