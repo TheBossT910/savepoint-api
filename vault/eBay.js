@@ -25,14 +25,15 @@ const eBayPrices = async (isSold) => {
   let prices = await page.locator('css=.s-item__price');
 
   // select all inner text
-  prices.allInnerTexts()
-    .then( async (res) => {
-        // print text
-        console.log(res);
-        // close browser instance
-        await browser.close();
-    });
-
+  let res = await prices.allInnerTexts()
+  // remove prices with ranges
+  let filteredPrices = res.filter( (res) => !res.includes("to"));
+  // remove $ sign and convert to float
+  filteredPrices = res.map( (res) => parseFloat(res.substring(1)) );
+  
+  // close broswer instance and return data
+  await browser.close();
+  return filteredPrices;
 };
 
 // getting all condition options
@@ -74,7 +75,9 @@ const productConditions = async () => {
     await browser.close(); 
   };
 
+// we will make another function that runs eBayPrices to get loose, complete/CIB, new prices
+// then we will do the math to find non-outliers and average them out to get a pricing estimate
 
 // testing
-// productConditions()
+// productConditions();
 
