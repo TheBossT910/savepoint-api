@@ -1,0 +1,32 @@
+{
+	"id": 1,
+	"created_at": 2025-05-05,
+	"product_id": "super-mario-odyssey",	// this would be the database id
+	"config": {
+		"low_alert": 3, 	// alert when stock is <5
+		"high_alert": 15,	// alert when stock is >20		
+		"links": [],	// links to marketplaces where it is listed
+		"price": {	// set prices for products in listed conditions
+			"new": 0,
+			"loose": 0,
+			"complete": 0,
+			"graded": 0,
+		},
+	},
+	"stock": {
+		"total": 0,	// total amount of stock
+		"new": 0,		// amount that is new
+		"loose": 0,	// loose stock
+		"complete": 0,// complete stock
+		"graded": 0,	// graded stock
+	},
+	"products": {
+		"1": {	// local id to track unique game
+			"images": [],			// image urls, uploaded for that item
+			"notes": "",	// notes for game
+			"condition": "",	// excellent, great, okay, poor (enums)
+			"type": ""		// new, loose, complete, graded (enums)
+
+		},
+	}
+}
