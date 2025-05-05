@@ -140,13 +140,21 @@ const productValuation = async (upc, isActive) => {
   let resNew = filterOutliers( await eBayPrices(urlNew) );
 
   // getting the average value
-  let averageLoose = resLoose.reduce( (accumulator, currentValue) => accumulator + currentValue ) / resLoose.length;
-  let averageComplete = resComplete.reduce( (accumulator, currentValue) => accumulator + currentValue ) / resComplete.length;
-  let averageNew = resNew.reduce( (accumulator, currentValue) => accumulator + currentValue ) / resNew.length;
+  let averageLoose = resLoose.reduce( (accumulator, currentValue) => accumulator + currentValue, 0 ) / resLoose.length;
+  let averageComplete = resComplete.reduce( (accumulator, currentValue) => accumulator + currentValue, 0 ) / resComplete.length;
+  let averageNew = resNew.reduce( (accumulator, currentValue) => accumulator + currentValue, 0 ) / resNew.length;
 
   // console.log(`Loose price: ${averageLoose}`);
   // console.log(`Complete price: ${averageComplete}`);
   // console.log(`New price: ${averageNew}`);
+
+  // console.log(resLoose.length);
+  // console.log(resComplete.length);
+  // console.log(resNew.length);
+
+  // console.log(resLoose);
+  // console.log(resComplete);
+  // console.log(resNew);
 
   // returning results
   return {'loose': averageLoose, 'complete': averageComplete, 'new':averageNew};
