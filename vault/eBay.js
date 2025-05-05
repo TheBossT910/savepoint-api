@@ -162,9 +162,15 @@ const productValuation = async (upc, isActive) => {
 
 // testing
 // productConditions();
-// productValuation()
-//   .then( (res) => {
-//     console.log(`Loose price: ${res.loose}`);
-//     console.log(`Complete price: ${res.complete}`);
-//     console.log(`New price: ${res.new}`);
-//   });
+// 045496590741, Super Mario Odyssey
+// 711719547518, Ghost of Tsushima
+// 045496870010 SM64
+
+productValuation('045496870010', false)
+  .then( (res) => {
+    console.log(`Loose price: ${res.loose}`);
+    console.log(`Complete price: ${res.complete}`);
+    console.log(`New price: ${res.new}`);
+  });
+
+// productConditions('711719547518')
