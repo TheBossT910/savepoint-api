@@ -38,7 +38,6 @@ function filterOutliers(someArray) {
   return filteredValues;
 }
 
-
 // get prices for active/sold listings
 const eBayPrices = async (url) => {
 
@@ -63,8 +62,13 @@ const eBayPrices = async (url) => {
   let res = await prices.allInnerTexts()
   // remove prices with ranges
   let filteredPrices = res.filter( (res) => !res.includes("to"));
+
   // remove $ sign and convert to float
-  filteredPrices = res.map( (res) => parseFloat(res.substring(1)) );
+  // Regex courtesy of StackOverflow, https://stackoverflow.com/questions/559112/how-to-convert-a-currency-string-to-a-double-with-javascript
+  filteredPrices = res.map( (res) => Number(res.replace(/[^0-9.-]+/g,"")) );
+
+  // console.log(filteredPrices)
+  // console.log(res);
   
   // close broswer instance and return data
   await browser.close();
