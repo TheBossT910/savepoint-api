@@ -115,27 +115,24 @@ const productConditions = async (upc) => {
     await browser.close(); 
   };
 
-// TODO: need to be able to switch between the different keywords (disc+only, cartridge+only, etc.)
-// need to format numbers to pricing format
 // Won't use productConditions() for now...
-const productValuation = async (upcArr) => {
-  // let upc = '045496590741';  // Super Mario Odyssey
-  let upc = '711719547518';     // Ghost of Tsushima
+const productValuation = async (upc, isActive) => {
+  let soldModifer = isActive ? '0' : '1';
 
   // keywords for condition searches
-  let looseSearch = `${upc}+disc+only`;  // cartridge+only or disc+only or game+only
-  let looseExclusion = 'cib+complete+sealed+new+brand+manual+box+case+boxed+like+mint+condition+great+excellent+includes+included+bundle+set+collection';
+  let looseSearch =  `${upc}+only`;   // cartridge+only or disc+only or game+only
+  let looseExclusion = 'cib+complete+sealed+new+great+excellent+bundle+set+collection+like';
 
-  let completeSearch = `${upc}+complete`;  // cib or complete
-  let compelteExclusion = '';
+  let completeSearch = `${upc}+cib`;  // cib or complete
+  let compelteExclusion = 'loose+only+sealed+new';
 
   let newSearch = `${upc}+new`; // new or sealed
-  let newExclusion = '';
+  let newExclusion = 'used+preowned+pre-owned+loose++only+open+complete+cib+like';
 
   // creating url 
-  let urlLoose = `https://www.ebay.com/sch/i.html?_nkw=${looseSearch}&_in_kw=1&LH_Sold=1&LH_Complete=1&_ipg=240&_ex_kw=${looseExclusion}`;
-  let urlComplete = `https://www.ebay.com/sch/i.html?_nkw=${completeSearch}&_in_kw=1&LH_Sold=1&LH_Complete=1&_ipg=240&_ex_kw=${compelteExclusion}`;
-  let urlNew = `https://www.ebay.com/sch/i.html?_nkw=${newSearch}&_in_kw=1&LH_Sold=1&LH_Complete=1&_ipg=240&_ex_kw=${newExclusion}`;
+  let urlLoose = `https://www.ebay.com/sch/i.html?_nkw=${looseSearch}&_in_kw=1&LH_Sold=${soldModifer}&LH_Complete=${soldModifer}&_ipg=240&_ex_kw=${looseExclusion}`;
+  let urlComplete = `https://www.ebay.com/sch/i.html?_nkw=${completeSearch}&_in_kw=1&LH_Sold=${soldModifer}&LH_Complete=${soldModifer}&_ipg=240&_ex_kw=${compelteExclusion}`;
+  let urlNew = `https://www.ebay.com/sch/i.html?_nkw=${newSearch}&_in_kw=1&LH_Sold=${soldModifer}&LH_Complete=${soldModifer}&_ipg=240&_ex_kw=${newExclusion}`;
 
   // grabbing prices and removing outliers
   let resLoose = filterOutliers( await eBayPrices(urlLoose) );
