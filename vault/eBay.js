@@ -77,12 +77,12 @@ const eBayPrices = async (url) => {
 };
 
 // getting all condition options
-const productConditions = async () => {
+const productConditions = async (upc) => {
 
     const browser = await chromium.launch();
     const page = await browser.newPage();
   
-    let url = 'https://www.ebay.com/sch/i.html?_nkw=super+mario+odyssey&LH_Sold=0&LH_Complete=0';
+    let url = `https://www.ebay.com/sch/i.html?_nkw=${upc}&LH_Sold=0&LH_Complete=0`;
   
     // go to webpage
     await page.goto(url);
