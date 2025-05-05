@@ -1,6 +1,6 @@
 // Taha Rashid
 // May 1, 2025
-// PriceCharting API
+// PriceCharting scraper
 
 const axios = require('axios');
 
