@@ -4,7 +4,7 @@
 
 // import functions
 const rawg = require('./rawg');
-const pricecharting = require('./pricecharting');
+const pricecharting = require('../vault/pricecharting');
 const igdb = require('./igdb')
 const db = require('../database/products');
 
