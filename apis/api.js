@@ -156,7 +156,23 @@ const createGame = async (slug, upc) => {
     } else {    // else use slug
         res = await retrieveData(slug, true);
     }
-    
+
+    // create record in database
+    const productsRecord = {
+        slug: res.slug,
+        upc: '',
+        name: res.name,
+        cover: res.cover,
+        media: res.media,
+        description: res.description,
+        release_date: 0,
+        price_new: res.new_price,
+        price_complete: res.complete_price,
+        price_loose: res.loose_price,
+        price_last_updated: 0,
+    };
+    await db.createProducts(productsRecord);
+
     // return data we just scrapped
     return res;
 };
