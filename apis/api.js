@@ -166,9 +166,9 @@ const createGame = async (slug, upc) => {
         media: res.media,
         description: res.description,
         release_date: 0,
-        price_new: res.new_price,
-        price_complete: res.complete_price,
-        price_loose: res.loose_price,
+        price_new: parseFloat(res.new_price),
+        price_complete: parseFloat(res.complete_price),
+        price_loose: parseFloat(res.loose_price),
         price_last_updated: 0,
     };
     await db.createProducts(productsRecord);
