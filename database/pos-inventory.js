@@ -40,3 +40,13 @@ const removeInventory = async ( id ) => {
         .select();
     return data;
 };
+
+// testing
+// const record = {
+//     store_id: '8fea0411-e4f4-4394-82a5-b703ba71f2cd',
+//     game_id: '0f6afa57-2eb8-4969-9f32-ebf7f537548b',
+//     data_id: '9b3aeec6-ed7f-43c7-96d5-255a5362c161',
+// }
+
+// createInventory( record )
+//     .then( (res) => console.log(res) );

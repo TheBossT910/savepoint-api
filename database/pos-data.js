@@ -43,3 +43,16 @@ const removeData = async( id ) => {
         .select();
     return data;
 };
+
+// testing
+// const record = {
+//     game_id: '0f6afa57-2eb8-4969-9f32-ebf7f537548b',
+//     images: null,
+//     condition: 'Very Good',
+//     type: 'Complete',
+//     price: 29.99,
+//     notes: 'crack in corner of cartridge',
+// }
+
+// createData( record )
+//     .then( (res) => console.log(res) );
