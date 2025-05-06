@@ -20,14 +20,14 @@ app.listen(
 
 // get most popular games of all time
 app.get('/products/lists/popular', (req, res) => {
-    let response = api.gamesPopular();
+    let response = api.getListPopular();
     response
         .then( (data) => res.status(200).send(data) );
 });
 
 // get currently popular (trending) games
 app.get('/products/lists/trending', (req, res) => {
-    let response = api.gamesTrending();
+    let response = api.getListTrending();
     response
         .then( (data) => res.status(200).send(data) );
 });
@@ -35,7 +35,7 @@ app.get('/products/lists/trending', (req, res) => {
 // get highest (most) rated games for specified platform
 app.get('/products/lists/highest-rated', (req, res) => {
     let platform = req.query.platform
-    let response = api.gamesHighestRated(platform);
+    let response = api.getListHighestRated(platform);
     response
         .then( (data) => res.status(200).send(data) );
 });

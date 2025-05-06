@@ -253,8 +253,7 @@ module.exports = {
     createGame, getGame, 
     createStock, removeStock, stockInfo: getStockInfo, 
     retrieveSearch, 
-    // rename fns calls in index.js to new fns
-    gamesPopular: getListPopular, gamesTrending: getListTrending, gamesHighestRated: getListHighestRated 
+    getListPopular, getListTrending, getListHighestRated 
 };
 
 // testing
