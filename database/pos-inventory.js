@@ -40,9 +40,18 @@ const removeInventory = async ( id ) => {
     return data;
 };
 
-// retrieve 
+// retrieve products that match the given condition
+const inventoryCondition = async( storeID, gameID, condition ) => {
+    const { data, error } = await supabase
+    .from('pos-inventory')
+    .select('*, pos-data!inner(*)')
+    .eq('store_id', storeID)                // match the store_id
+    .eq('game_id', gameID)                  // match the game_id
+    .eq('pos-data.condition', condition);   // match the condition
+    return data;
+}
 
-module.exports = { createInventory, getInventory, removeInventory };
+module.exports = { createInventory, getInventory, removeInventory, inventoryCondition };
 
 // testing
 // const record = {
@@ -52,4 +61,7 @@ module.exports = { createInventory, getInventory, removeInventory };
 // }
 
 // createInventory( record )
+//     .then( (res) => console.log(res) );
+
+// inventoryCondition('', 'c1866624-675e-429b-b0cc-b2f354906c95', 'New')
 //     .then( (res) => console.log(res) );
