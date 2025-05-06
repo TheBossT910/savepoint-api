@@ -61,6 +61,16 @@ app.get('/developer/create-products', (req, res) => {
         .then( (data) => res.status(200).send(data) );
 });
 
+// get products
+app.get('/developer/get-products', (req, res) => {
+    // getting id
+    let id = req.query.id;
+
+    let response = api.getGame(id);
+    response
+        .then( (data) => res.status(200).send(data) );
+});
+
 // future endpoints to be implemented
 // see Postman for docs/info. Do not make them all GET requests (properly implement them!)
 app.get('/products/search', (req, res) => {

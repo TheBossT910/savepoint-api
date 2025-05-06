@@ -160,21 +160,25 @@ const createGame = async (slug, upc) => {
     // create record in database
     const productsRecord = {
         slug: res.slug,
-        upc: '',
+        upc: null,
         name: res.name,
         cover: res.cover,
         media: res.media,
         description: res.description,
-        release_date: 0,
-        price_new: parseFloat(res.new_price),
-        price_complete: parseFloat(res.complete_price),
-        price_loose: parseFloat(res.loose_price),
-        price_last_updated: 0,
+        release_date: null,
+        price_new: Number(res.new_price.replace(/[^0-9.-]+/g,"")),
+        price_complete: Number(res.complete_price.replace(/[^0-9.-]+/g,"")),
+        price_loose: Number(res.loose_price.replace(/[^0-9.-]+/g,"")),
+        price_last_updated: null,
     };
     await db.createProducts(productsRecord);
 
     // return data we just scrapped
     return res;
+};
+
+const getGame = async (id) => { 
+    return db.getProducts(id) 
 };
 
 // getting popular games
@@ -198,7 +202,7 @@ const gamesHighestRated = async (platform) => {
     return raw;
 }
 
-module.exports = { retrieveSearch, createGame, gamesPopular, gamesTrending, gamesHighestRated };
+module.exports = { retrieveSearch, createGame, getGame, gamesPopular, gamesTrending, gamesHighestRated };
 
 // testing
 // let rawgid = "58779";

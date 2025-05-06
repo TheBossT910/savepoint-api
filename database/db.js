@@ -25,6 +25,16 @@ const createProducts = async ( record ) => {
             price_loose: record.price_loose,
             price_last_updated: record.price_last_updated,
         });
+    // console.log( record, error );
 };
 
-module.exports = { createProducts };
+// get records from 'products' table
+const getProducts = async ( id ) => {
+    const { data, error } = await supabase
+        .from('products')
+        .select()
+        .eq('id', id);
+    return data[0];
+};
+
+module.exports = { createProducts, getProducts };
