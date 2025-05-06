@@ -49,6 +49,17 @@ app.get('/tools/rawg-search', (req, res) => {
         .then( (data) => res.status(200).send( data ));
 });
 
+// DEVELOPER ENDPOINTS
+// create products
+app.get('/developer/create-products', (req, res) => {
+    // getting slug and upc
+    let slug = req.query.slug;
+    let upc = req.query.upc;
+
+    let response = api.createGame(slug, upc);
+    response
+        .then( (data) => res.status(200).send(data) );
+});
 
 // future endpoints to be implemented
 // see Postman for docs/info. Do not make them all GET requests (properly implement them!)

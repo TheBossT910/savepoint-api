@@ -145,41 +145,20 @@ const retrieveSearch = async (search) => {
     return raw;
 }
 
-// get data from DB
-const retrieveDB = async (slug, upc) => {
+// create game data 
+const createGame = async (slug, upc) => {
     // set to sentinel value if no upc found
     if (upc == '') upc = '-1';
 
-    // check if the db has this entry
-    let res = await db.databaseReadGames(slug, upc);
-
-    // get data and create entry if entry not found
-    if (res == null || res.length == 0) {
-        console.log('creating entry');
-
-        // create entry
-        // if we have upc, use upc
-        if (upc != -1) {
-             res = await retrieveData(upc, false);
-        } else {    // else use slug
-            res = await retrieveData(slug, true);
-        }
-
-        // add data to database
-        await db.databaseWriteGames({
-            data: res,
-            slug: res.slug,
-            upc: upc != '-1' ? upc : null
-        });
-
-        // return data we just scrapped
-        return res;
+    // if we have upc, use upc
+    if (upc != -1) {
+            res = await retrieveData(upc, false);
+    } else {    // else use slug
+        res = await retrieveData(slug, true);
     }
-
-    // return data if there was matching data in the database
-    if (res.length > 0) return res[0];
-    // else return empty object
-    return {};
+    
+    // return data we just scrapped
+    return res;
 };
 
 // getting popular games
@@ -203,7 +182,7 @@ const gamesHighestRated = async (platform) => {
     return raw;
 }
 
-module.exports = { retrieveSearch, retrieveDB, gamesPopular, gamesTrending, gamesHighestRated };
+module.exports = { retrieveSearch, createGame, gamesPopular, gamesTrending, gamesHighestRated };
 
 // testing
 // let rawgid = "58779";
