@@ -9,8 +9,8 @@ const { createClient } = require('@supabase/supabase-js');
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 // add to data
-const createData = async() => {
-    const { error } = await supabase
+const createData = async( record ) => {
+    const { data, error } = await supabase
     .from('pos-data')
     .insert({
         game_id: record.game_id,
@@ -19,8 +19,10 @@ const createData = async() => {
         type: record.type,
         price: record.price,
         notes: record.notes,
-    });
-    console.log( record, error );
+    })
+    .select('id')
+    console.log( error );
+    return data
 };
 
 // retrive from data

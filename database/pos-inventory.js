@@ -10,14 +10,16 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY
 
 // add to inventory
 const createInventory = async ( record ) => {
-    const { error } = await supabase
+    const { data, error } = await supabase
     .from('pos-inventory')
     .insert({
         store_id: record.store_id,
         game_id: record.game_id,
         data_id: record.data_id,
-    });
-    console.log( record, error );
+    })
+    .select('id')
+    console.log( error );
+    return data;
 };
 
 // retrieve from inventory
