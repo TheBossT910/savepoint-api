@@ -181,6 +181,22 @@ const getGame = async (id) => {
     return db.getProducts(id) 
 };
 
+const createStock = async(storeID, gameID, dataRecord ) => {
+    // 1. Create a pos-data record   
+    let dataID = await createData( dataRecord );
+
+    // 2. Create a pos-inventory record
+    const inventoryRecord = {
+        store_id: storeID,
+        game_id: gameID,
+        data_id: dataID,
+    }
+    
+    const inventoryID = await createInventory( inventoryRecord )
+    // return the inventory id
+    return inventoryID;
+};
+
 // getting popular games
 const gamesPopular = async () => {
     let res =  await igdb.IGDBPopular();
