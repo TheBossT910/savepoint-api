@@ -18,7 +18,6 @@ const createInventory = async ( record ) => {
         data_id: record.data_id,
     })
     .select('id')
-    console.log( error );
     return data;
 };
 
@@ -40,6 +39,10 @@ const removeInventory = async ( id ) => {
         .select();
     return data;
 };
+
+// retrieve 
+
+module.exports = { createInventory, getInventory, removeInventory };
 
 // testing
 // const record = {

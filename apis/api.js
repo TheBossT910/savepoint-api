@@ -11,6 +11,9 @@ const db = require('../database/db');
 // fuzzy search library
 const Fuse = require('fuse.js');
 
+const { createData, removeData } = require('../database/pos-data');
+const { createInventory } = require('../database/pos-inventory');
+
 // converts game name to slug
 // courtesy of ChatGPT (will make own function later, just need to have working product first!)
 function slugify(gameName) {
@@ -181,6 +184,7 @@ const getGame = async (id) => {
     return db.getProducts(id) 
 };
 
+// create and stock to inventory
 const createStock = async(storeID, gameID, dataRecord ) => {
     // 1. Create a pos-data record   
     let dataID = await createData( dataRecord );
@@ -189,7 +193,7 @@ const createStock = async(storeID, gameID, dataRecord ) => {
     const inventoryRecord = {
         store_id: storeID,
         game_id: gameID,
-        data_id: dataID,
+        data_id: dataID[0].id,
     }
     
     const inventoryID = await createInventory( inventoryRecord )
@@ -197,6 +201,14 @@ const createStock = async(storeID, gameID, dataRecord ) => {
     return inventoryID;
 };
 
+// remove inventory and data records
+const removeStock = async(dataID) => {
+    // we just need to delete the pos-data record as it will cascade and delete the pos-inventory record automatically
+    // returns the removed data record
+    return removeData( dataID );
+};
+
+// game lists
 // getting popular games
 const gamesPopular = async () => {
     let res =  await igdb.IGDBPopular();
@@ -218,7 +230,7 @@ const gamesHighestRated = async (platform) => {
     return raw;
 }
 
-module.exports = { retrieveSearch, createGame, getGame, gamesPopular, gamesTrending, gamesHighestRated };
+module.exports = { createGame, getGame, createStock, removeStock, retrieveSearch, gamesPopular, gamesTrending, gamesHighestRated };
 
 // testing
 // let rawgid = "58779";

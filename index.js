@@ -49,9 +49,28 @@ app.get('/tools/rawg-search', (req, res) => {
         .then( (data) => res.status(200).send( data ));
 });
 
+// create and add item to inventory
+app.post('/pos/add', (req, res) => {
+    // getting variables
+    const storeID = req.query.store_id;
+    const gameID = req.query.game_id;
+    const dataRecord = req.body;
+
+    api.createStock( storeID, gameID, dataRecord )
+        .then( (data) => res.status(200).send(`Inventory created at pos-inventory: ${ data[0].id }`) );
+});
+
+// remove item from inventory ( also removes its data record)
+app.delete('/pos/remove', (req, res) => {
+    const dataID = req.query.data_id;
+
+    api.removeStock( dataID )
+        .then( (data) => res.status(200).send( data ))
+});
+
 // DEVELOPER ENDPOINTS
 // create products
-app.get('/developer/create-products', (req, res) => {
+app.post('/developer/create-products', (req, res) => {
     // getting slug and upc
     let slug = req.query.slug;
     let upc = req.query.upc;
@@ -81,24 +100,14 @@ app.get('/pos/search', (req, res) => {
     return res.status(501).send("/pos/search not implemented yet");
 });
 
-app.get('/pos/add', (req, res) => {
-    return res.status(501).send("/pos/add not implemented yet");
-});
-
-app.get('/pos/remove', (req, res) => {
-    return res.status(501).send("/pos/remove not implemented yet");
-});
-
 app.get('/tools/image-search', (req, res) => {
     return res.status(501).send("/tools/image-search not implemented yet");
 });
 
 app.get('/users/info', (req, res) => {
-    let { id } = req.params;
     return res.status(501).send("/users/info not implemented yet");
 });
 
 app.get('/stores/info', (req, res) => {
-    let { id } = req.params;
     return res.status(501).send("/stores/info not implemented yet");
 });

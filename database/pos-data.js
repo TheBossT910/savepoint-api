@@ -21,7 +21,6 @@ const createData = async( record ) => {
         notes: record.notes,
     })
     .select('id')
-    console.log( error );
     return data
 };
 
@@ -43,6 +42,8 @@ const removeData = async( id ) => {
         .select();
     return data;
 };
+
+module.exports = { createData, getData, removeData };
 
 // testing
 // const record = {
