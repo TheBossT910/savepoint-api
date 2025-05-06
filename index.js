@@ -68,6 +68,17 @@ app.delete('/pos/remove', (req, res) => {
         .then( (data) => res.status(200).send( data ))
 });
 
+// get condition info for a particular item in inventory
+app.get('/pos/info', (req, res) => {
+    // getting variables
+    const storeID = req.query.store_id;
+    const gameID = req.query.game_id;
+
+    let response = api.stockInfo(storeID, gameID);
+    response
+        .then( (data) => res.status(200).send( data ));
+});
+
 // DEVELOPER ENDPOINTS
 // create products
 app.post('/developer/create-products', (req, res) => {

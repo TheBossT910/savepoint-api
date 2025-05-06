@@ -12,7 +12,7 @@ const db = require('../database/db');
 const Fuse = require('fuse.js');
 
 const { createData, removeData } = require('../database/pos-data');
-const { createInventory } = require('../database/pos-inventory');
+const { createInventory, inventoryCondition } = require('../database/pos-inventory');
 
 // converts game name to slug
 // courtesy of ChatGPT (will make own function later, just need to have working product first!)
@@ -208,6 +208,25 @@ const removeStock = async(dataID) => {
     return removeData( dataID );
 };
 
+const stockInfo = async(storeID, gameID) => {
+    const conditions = ['New', 'Excellent', 'Very Good', 'Good', 'Acceptable'];
+    let info = {
+        'New': [],
+        'Excellent': [],
+        'Very Good': [],
+        'Good': [],
+        'Acceptable': []
+    }
+
+    // get the data records that meet the conditions
+    for ( let i = 0; i < conditions.length; i++ ) {
+        let data = await inventoryCondition(storeID, gameID, conditions[i]);
+        info[ conditions[i] ] = data;
+    }
+
+    return info;
+}
+
 // game lists
 // getting popular games
 const gamesPopular = async () => {
@@ -230,7 +249,12 @@ const gamesHighestRated = async (platform) => {
     return raw;
 }
 
-module.exports = { createGame, getGame, createStock, removeStock, retrieveSearch, gamesPopular, gamesTrending, gamesHighestRated };
+module.exports = { 
+    createGame, getGame, 
+    createStock, removeStock, stockInfo, 
+    retrieveSearch, 
+    gamesPopular, gamesTrending, gamesHighestRated 
+};
 
 // testing
 // let rawgid = "58779";
@@ -250,3 +274,6 @@ module.exports = { createGame, getGame, createStock, removeStock, retrieveSearch
 
 // retrieveDB('super-mario-odyssey', '')
 //     .then( (res) => console.log(res) );
+
+// stockInfo('8fea0411-e4f4-4394-82a5-b703ba71f2cd', 'c1866624-675e-429b-b0cc-b2f354906c95')
+//     .then( (res) => console.log(res) )
