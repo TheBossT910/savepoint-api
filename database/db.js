@@ -1,6 +1,6 @@
 // Taha Rashid
 // May 2, 2025
-// testing out Supabase
+// managing products
 
 require('dotenv').config()
 const { createClient } = require('@supabase/supabase-js');
@@ -34,7 +34,7 @@ const getProducts = async ( id ) => {
         .from('products')
         .select()
         .eq('id', id);
-    return data[0];
+    return data;
 };
 
 module.exports = { createProducts, getProducts };
