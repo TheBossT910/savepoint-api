@@ -6,7 +6,7 @@
 const rawg = require('./rawg');
 const pricecharting = require('./pricecharting');
 const igdb = require('./igdb')
-const db = require('../database/db');
+const db = require('../database/products');
 
 // fuzzy search library
 const Fuse = require('fuse.js');
