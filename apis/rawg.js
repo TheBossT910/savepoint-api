@@ -23,17 +23,17 @@ const RAWGSearch = async (search, isPrecise) => {
 // RAWG game details
 // Assumes we already know gameID
 // DEPRECATED
-const RAWGGame = async (gameID) => {
-    let config = {
-        method: 'get',
-        maxBodyLength: Infinity,
-        url: `https://api.rawg.io/api/games/${gameID}?key=${process.env.RAWG_KEY}`,
-        headers: { }
-      };
+// const RAWGGame = async (gameID) => {
+//     let config = {
+//         method: 'get',
+//         maxBodyLength: Infinity,
+//         url: `https://api.rawg.io/api/games/${gameID}?key=${process.env.RAWG_KEY}`,
+//         headers: { }
+//       };
 
-    const response = await axios.request(config);
-    return response.data;
-}
+//     const response = await axios.request(config);
+//     return response.data;
+// }
 
 // exporting functions
 module.exports = { RAWGSearch };
