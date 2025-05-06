@@ -18,18 +18,30 @@ app.listen(
 // PUT: Update
 // DELETE: Delete
 
-// get game from database
-app.get('/games/db', (req, res) => {
-    let slug = req.query.slug;
-    let upc = req.query.upc;
-
-    let response = api.retrieveDB(slug, upc);
+// get most popular games of all time
+app.get('/products/lists/popular', (req, res) => {
+    let response = api.gamesPopular();
     response
         .then( (data) => res.status(200).send(data) );
 });
 
-// get game from search, query is q
-app.get('/games/search', (req, res) => {
+// get currently popular (trending) games
+app.get('/products/lists/trending', (req, res) => {
+    let response = api.gamesTrending();
+    response
+        .then( (data) => res.status(200).send(data) );
+});
+
+// get highest (most) rated games for specified platform
+app.get('/products/lists/highest-rated', (req, res) => {
+    let platform = req.query.platform
+    let response = api.gamesHighestRated(platform);
+    response
+        .then( (data) => res.status(200).send(data) );
+});
+
+// get game from search on RAWG, query is q
+app.get('/tools/rawg-search', (req, res) => {
     let search = req.query.q;
 
     let response = api.retrieveSearch(search);
@@ -37,39 +49,35 @@ app.get('/games/search', (req, res) => {
         .then( (data) => res.status(200).send( data ));
 });
 
-// get most popular games of all time
-app.get('/games/lists/popular', (req, res) => {
-    let response = api.gamesPopular();
-    response
-        .then( (data) => res.status(200).send(data) );
+
+// future endpoints to be implemented
+// see Postman for docs/info. Do not make them all GET requests (properly implement them!)
+app.get('/products/search', (req, res) => {
+    return res.status(501).send("/products/search not implemented yet");
 });
 
-// get currently popular (trending) games
-app.get('/games/lists/trending', (req, res) => {
-    let response = api.gamesTrending();
-    response
-        .then( (data) => res.status(200).send(data) );
+app.get('/pos/search', (req, res) => {
+    return res.status(501).send("/pos/search not implemented yet");
 });
 
-// get highest (most) rated games for specified platform
-app.get('/games/lists/highest-rated', (req, res) => {
-    let platform = req.query.platform
-    let response = api.gamesHighestRated(platform);
-    response
-        .then( (data) => res.status(200).send(data) );
+app.get('/pos/add', (req, res) => {
+    return res.status(501).send("/pos/add not implemented yet");
 });
 
+app.get('/pos/remove', (req, res) => {
+    return res.status(501).send("/pos/remove not implemented yet");
+});
 
-// TODO: implement
-// get users
-app.get('/users/:id', (req, res) => {
+app.get('/tools/image-search', (req, res) => {
+    return res.status(501).send("/tools/image-search not implemented yet");
+});
+
+app.get('/users/info', (req, res) => {
     let { id } = req.params;
-    return res.status(501).send("users/ not implemented yet");
+    return res.status(501).send("/users/info not implemented yet");
 });
 
-// TODO: implement
-// get stores
-app.get('/stores/:id', (req, res) => {
+app.get('/stores/info', (req, res) => {
     let { id } = req.params;
-    return res.status(501).send("stores/ not implemented yet");
+    return res.status(501).send("/stores/info not implemented yet");
 });
