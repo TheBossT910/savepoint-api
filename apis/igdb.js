@@ -9,7 +9,7 @@ const axios = require('axios');
 const dataLimit = 50;
 
 // general function, used by other IGDB functions
-const IGDBGeneral = async (url, data) => {
+const getGeneralData = async (url, data) => {
     let config = {
         method: 'POST',
         maxBodyLength: Infinity,
@@ -28,32 +28,32 @@ const IGDBGeneral = async (url, data) => {
 }
 
 // Specific game's details
-const IGDBGame = (slug) => {
+const getGame = (slug) => {
     let data = `fields aggregated_rating,cover.url,first_release_date,name,platforms.name,screenshots.url,summary,url,videos.video_id,websites.url; where slug = "${slug}";`;
     let url = 'https://api.igdb.com/v4/games';
-    return IGDBGeneral(url, data);
+    return getGeneralData(url, data);
 }
 
 // Popular games
-const IGDBPopular = () => {
+const getListPopular = () => {
     let data = `fields slug,aggregated_rating,cover.url,first_release_date,name; sort total_rating_count desc; where total_rating_count != null; limit ${dataLimit};`;
     let url = 'https://api.igdb.com/v4/games';
-    return IGDBGeneral(url, data);
+    return getGeneralData(url, data);
 }
 
 // Trending games
-const IGDBTrending = () => {
+const getListTrending = () => {
     let currentDate = "1641094034"; // temp, represented as Unix time
     let data = `fields slug,aggregated_rating,cover.url,first_release_date,name; where first_release_date > ${currentDate} & (follows > 10 | total_rating_count > 20); sort total_rating_count desc; limit ${dataLimit};`;
     let url = 'https://api.igdb.com/v4/games';
-    return IGDBGeneral(url, data);
+    return getGeneralData(url, data);
 }
 
 // Highest rated games for a specific platform
-const IGDBHighestRated = (platform) => {
+const getListHighestRated = (platform) => {
     let data = `fields slug,aggregated_rating,cover.url,first_release_date,name; sort total_rating_count desc; where platforms.name = "${platform}" & total_rating_count != null; limit ${dataLimit};`;
     let url = 'https://api.igdb.com/v4/games';
-    return IGDBGeneral(url, data);
+    return getGeneralData(url, data);
 }
 
-module.exports = { IGDBGame, IGDBPopular, IGDBTrending, IGDBHighestRated };
+module.exports = { getGame, getListPopular, getListTrending, getListHighestRated };

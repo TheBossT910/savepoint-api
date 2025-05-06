@@ -5,7 +5,7 @@
 const axios = require('axios');
 
 // gets pricing data of game using game's UID (barecode id)
-const pricechartingUID = async (uid) => {
+const getValuation = async (uid) => {
     const config = {
         method: 'GET',
         url: `https://www.pricecharting.com/search-products?type=videogames&q=${uid}`,
@@ -18,4 +18,4 @@ const pricechartingUID = async (uid) => {
     return response.data;
 }
 
-module.exports = { pricechartingUID };
+module.exports = { getValuation };

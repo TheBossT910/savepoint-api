@@ -16,7 +16,7 @@ const { createInventory, inventoryCondition } = require('../database/pos-invento
 
 // converts game name to slug
 // courtesy of ChatGPT (will make own function later, just need to have working product first!)
-function slugify(gameName) {
+function slugConverter(gameName) {
     return gameName
       .toLowerCase()
       .trim()
@@ -54,7 +54,7 @@ const fuzzySearch = (list, search) => {
 }
 
 // helper function used by gamesPopular, gamesTrending, gamesHighestRated
-const gamesGeneral =  (res) => {
+const formatList =  (res) => {
     let raw = Array.from( res, (item) => {
         let data = {
             name: item.name,
@@ -91,7 +91,7 @@ const retrieveData = async (uid, isSlug) => {
     }
 
     // getting prices and slug
-    res = await pricecharting.pricechartingUID(uid)
+    res = await pricecharting.getValuation(uid)
     let products = res.products;
 
     if (isSlug) {
@@ -106,7 +106,7 @@ const retrieveData = async (uid, isSlug) => {
         raw = products[0];
 
         // need to get the slug
-        data.slug = slugify(raw.productName);
+        data.slug = slugConverter(raw.productName);
     }
 
     data.loose_price = raw.price1;
@@ -114,7 +114,7 @@ const retrieveData = async (uid, isSlug) => {
     data.new_price = raw.price2;
 
     // getting game data
-    res = await igdb.IGDBGame(data.slug)
+    res = await igdb.getGame(data.slug)
     raw = res[0];
     data.name = raw.name;
     data.description = raw.summary;
@@ -133,7 +133,7 @@ const retrieveData = async (uid, isSlug) => {
 
 // getting slug from search
 const retrieveSearch = async (search) => {
-    let res = await rawg.RAWGSearch(search, true);
+    let res = await rawg.getSearch(search, true);
     let raw = Array.from( res.results, (item) => {
         let data = {
             name: item.name,
@@ -208,7 +208,7 @@ const removeStock = async(dataID) => {
     return removeData( dataID );
 };
 
-const stockInfo = async(storeID, gameID) => {
+const getStockInfo = async(storeID, gameID) => {
     const conditions = ['New', 'Excellent', 'Very Good', 'Good', 'Acceptable'];
     let info = {
         'New': [],
@@ -229,31 +229,32 @@ const stockInfo = async(storeID, gameID) => {
 
 // game lists
 // getting popular games
-const gamesPopular = async () => {
-    let res =  await igdb.IGDBPopular();
-    let raw = gamesGeneral(res);
+const getListPopular = async () => {
+    let res =  await igdb.getListPopular();
+    let raw = formatList(res);
     return raw;
 }
 
 // getting trending games
-const gamesTrending = async () => {
-    let res =  await igdb.IGDBTrending();
-    let raw = gamesGeneral(res);
+const getListTrending = async () => {
+    let res =  await igdb.getListTrending();
+    let raw = formatList(res);
     return raw;
 }
 
 // getting highest rated games for specified platform
-const gamesHighestRated = async (platform) => {
-    let res =  await igdb.IGDBHighestRated(platform);
-    let raw = gamesGeneral(res);
+const getListHighestRated = async (platform) => {
+    let res =  await igdb.getListHighestRated(platform);
+    let raw = formatList(res);
     return raw;
 }
 
 module.exports = { 
     createGame, getGame, 
-    createStock, removeStock, stockInfo, 
+    createStock, removeStock, stockInfo: getStockInfo, 
     retrieveSearch, 
-    gamesPopular, gamesTrending, gamesHighestRated 
+    // rename fns calls in index.js to new fns
+    gamesPopular: getListPopular, gamesTrending: getListTrending, gamesHighestRated: getListHighestRated 
 };
 
 // testing
