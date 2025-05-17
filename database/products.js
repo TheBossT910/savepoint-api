@@ -37,4 +37,18 @@ const getProducts = async ( id ) => {
     return data;
 };
 
-module.exports = { createProducts, getProducts };
+// return records that exist with the given slug
+const getExistingProducts = async ( slugs ) => {
+    const { data, error } = await supabase
+        .from('products')
+        .select()
+        .in('slug', slugs);
+    return data;
+}
+
+module.exports = { createProducts, getProducts, getExistingProducts };
+
+// DEBUG
+// const slugs = ['super-mario-64', 'super-mario-odyssey', 'forza-horizon-5', 'super-mario-galaxy-2'];
+// getExistingProducts( slugs )
+//     .then( (data) => console.log(data) );

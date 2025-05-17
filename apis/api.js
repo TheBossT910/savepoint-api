@@ -13,6 +13,7 @@ const Fuse = require('fuse.js');
 
 const { createData, removeData } = require('../database/pos-data');
 const { createInventory, inventoryCondition } = require('../database/pos-inventory');
+const { getExistingProducts } = require('../database/products');
 
 // converts game name to slug
 // courtesy of ChatGPT (will make own function later, just need to have working product first!)
@@ -232,7 +233,28 @@ const getStockInfo = async(storeID, gameID) => {
 const getListPopular = async () => {
     let res =  await igdb.getListPopular();
     let raw = formatList(res);
-    return raw;
+
+    // get slugs for popular products
+    let popularSlugs = raw.map( data => data.slug )
+
+    // get slugs for products that are in the database
+    let existingProducts = await getExistingProducts(popularSlugs);
+    let existingSlugs = existingProducts.map( data => data.slug );
+
+    // get slugs for products that don't exist in the database
+    let newSlugs = popularSlugs.filter( slug => !existingSlugs.includes(slug));
+
+    console.log(newSlugs);
+
+    // creating games in database
+    let newProducts = [];
+    for( const slug of newSlugs ) {
+        let product =  await createGame(slug, '-1');
+        newProducts.push(product);
+    }
+
+    // return all games
+    return existingProducts.concat(newProducts);
 }
 
 // getting trending games
@@ -256,24 +278,6 @@ module.exports = {
     getListPopular, getListTrending, getListHighestRated 
 };
 
-// testing
-// let rawgid = "58779";
-// let upc = "093155176119";    // Starfield
-// let upc = "045496590741";    // SMO
-// let search = "Super Mario Odyssey";
-// let upc = 'super-mario-odyssey';
-
-// retrieveData(upc, true)
-//     .then( (res) => console.log(res) );
-
-// retrieveSearch(search)
-//     .then( (res) => console.log(res) );
-
-// gamesTrending()
-//     .then( (res) => console.log(res) );
-
-// retrieveDB('super-mario-odyssey', '')
-//     .then( (res) => console.log(res) );
-
-// stockInfo('8fea0411-e4f4-4394-82a5-b703ba71f2cd', 'c1866624-675e-429b-b0cc-b2f354906c95')
-//     .then( (res) => console.log(res) )
+// DEBUG
+// getListPopular()
+//     .then( (data) => console.log(data) );
