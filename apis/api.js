@@ -16,7 +16,7 @@ const { createInventory, inventoryCondition } = require('../database/pos-invento
 const { getExistingProducts } = require('../database/products');
 
 // converts game name to slug
-// courtesy of ChatGPT (will make own function later, just need to have working product first!)
+// courtesy of ChatGPT (will make own function later)
 function slugConverter(gameName) {
     return gameName
       .toLowerCase()
@@ -28,7 +28,7 @@ function slugConverter(gameName) {
 
 // converts Unix time to timestamp
 // Courtesy of Stack Overflow, https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
-function timeConverter(UNIX_timestamp){
+function timeConverter(UNIX_timestamp) {
     let a = new Date(UNIX_timestamp * 1000);
     let months = ['1','2','3','4','5','6','7','8','9','10','11','12'];
     let year = a.getFullYear();
@@ -40,7 +40,7 @@ function timeConverter(UNIX_timestamp){
     // var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
     let time = `${year}-${month}-${date}`
     return time;
-  }
+}
 
 // returns the index in the list with the closet search match
 const fuzzySearch = (list, search) => {
@@ -51,24 +51,13 @@ const fuzzySearch = (list, search) => {
 
     const fuse = new Fuse(list, options);
     const result = fuse.search(search);
-    return result[0].refIndex;
-}
 
-// helper function used by gamesPopular, gamesTrending, gamesHighestRated
-const formatList =  (res) => {
-    let raw = Array.from( res, (item) => {
-        let data = {
-            name: item.name,
-            slug: item.slug,
-            release_date: timeConverter(item.first_release_date),
-            image: 'https:' + item.cover.url.replace('t_thumb', 't_1080p'),
-            rating: item.aggregated_rating,
-        };
-        return data;
-    })
+    let returnVal = -1;
 
-    // return all formatted results
-    return raw;
+    try {
+        returnVal = result[0].refIndex;
+    } catch {}
+    return returnVal
 }
 
 // helper function to get data from external api when we have upc/slug
@@ -98,7 +87,17 @@ const retrieveData = async (uid, isSlug) => {
     if (isSlug) {
         // match the closest name
         let matchedIndex = fuzzySearch(products, uid);
-        raw = products[matchedIndex];
+
+        // default price values
+        raw = {
+            price1: '-1',
+            price2: '-1',
+            price3: '-1',
+        }
+        // set to proper product object if found
+        if ( matchedIndex != -1 ) {
+            raw = products[matchedIndex];
+        }
 
         // uid is already the slug
         data.slug = uid;
@@ -130,26 +129,7 @@ const retrieveData = async (uid, isSlug) => {
     return data;
 }
 
-
-
-// getting slug from search
-const retrieveSearch = async (search) => {
-    let res = await rawg.getSearch(search, true);
-    let raw = Array.from( res.results, (item) => {
-        let data = {
-            name: item.name,
-            slug: item.slug,
-            release_date: item.released,
-            image: item.background_image,
-        };
-        return data;
-    });
-
-    // return all formatted results
-    return raw;
-}
-
-// create game data 
+// gets game data from external APIs, and adds to database
 const createGame = async (slug, upc) => {
     // set to sentinel value if no upc found
     if (upc == '') upc = '-1';
@@ -181,12 +161,51 @@ const createGame = async (slug, upc) => {
     return res;
 };
 
+// retrieves multiple games 
+const retrieveGames = async (slugs) => {
+    // get slugs for products that are in the database
+    let existingProducts = await getExistingProducts(slugs);
+    let existingSlugs = existingProducts.map( data => data.slug );
+
+    // get slugs for products that don't exist in the database
+    let newSlugs = slugs.filter( slug => !existingSlugs.includes(slug));
+
+    // creating new products in database
+    let newProducts = [];
+    for( const slug of newSlugs ) {
+        let product =  await createGame(slug, '-1');
+        newProducts.push(product);
+    }
+
+    // return all slugs products
+    return existingProducts.concat(newProducts);
+}
+
+
+
+// getting slug from search
+const retrieveSearch = async (search) => {
+    let res = await rawg.getSearch(search, true);
+    let raw = Array.from( res.results, (item) => {
+        let data = {
+            name: item.name,
+            slug: item.slug,
+            release_date: item.released,
+            image: item.background_image,
+        };
+        return data;
+    });
+
+    // return all formatted results
+    return raw;
+}
+
 const getGame = async (id) => { 
     return db.getProducts(id) 
 };
 
-// create and stock to inventory
-const createStock = async(storeID, gameID, dataRecord ) => {
+// create and add stock to inventory
+const createStock = async (storeID, gameID, dataRecord ) => {
     // 1. Create a pos-data record   
     let dataID = await createData( dataRecord );
 
@@ -232,43 +251,22 @@ const getStockInfo = async(storeID, gameID) => {
 // getting popular games
 const getListPopular = async () => {
     let res =  await igdb.getListPopular();
-    let raw = formatList(res);
-
-    // get slugs for popular products
-    let popularSlugs = raw.map( data => data.slug )
-
-    // get slugs for products that are in the database
-    let existingProducts = await getExistingProducts(popularSlugs);
-    let existingSlugs = existingProducts.map( data => data.slug );
-
-    // get slugs for products that don't exist in the database
-    let newSlugs = popularSlugs.filter( slug => !existingSlugs.includes(slug));
-
-    console.log(newSlugs);
-
-    // creating games in database
-    let newProducts = [];
-    for( const slug of newSlugs ) {
-        let product =  await createGame(slug, '-1');
-        newProducts.push(product);
-    }
-
-    // return all games
-    return existingProducts.concat(newProducts);
+    let slugs = res.map( data => data.slug )
+    return retrieveGames(slugs);
 }
 
 // getting trending games
 const getListTrending = async () => {
     let res =  await igdb.getListTrending();
-    let raw = formatList(res);
-    return raw;
+    let slugs = res.map( data => data.slug )
+    return retrieveGames(slugs);
 }
 
 // getting highest rated games for specified platform
 const getListHighestRated = async (platform) => {
     let res =  await igdb.getListHighestRated(platform);
-    let raw = formatList(res);
-    return raw;
+    let slugs = res.map( data => data.slug )
+    return retrieveGames(slugs);
 }
 
 module.exports = { 
