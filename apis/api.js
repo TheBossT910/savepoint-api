@@ -12,7 +12,7 @@ const db = require('../database/products');
 const Fuse = require('fuse.js');
 
 const { createData, removeData } = require('../database/pos-data');
-const { createInventory, inventoryCondition } = require('../database/pos-inventory');
+const { createInventory, inventoryCondition, getAllInventory } = require('../database/pos-inventory');
 const { getExistingProducts } = require('../database/products');
 
 // converts game name to slug
@@ -247,6 +247,10 @@ const getStockInfo = async(storeID, gameID) => {
     return info;
 }
 
+const getAllStock = async (storeID) => {
+    return getAllInventory(storeID);
+}
+
 // game lists
 // getting popular games
 const getListPopular = async () => {
@@ -271,7 +275,7 @@ const getListHighestRated = async (platform) => {
 
 module.exports = { 
     createGame, getGame, 
-    createStock, removeStock, stockInfo: getStockInfo, 
+    createStock, removeStock, getStockInfo, getAllStock,
     retrieveSearch, 
     getListPopular, getListTrending, getListHighestRated 
 };

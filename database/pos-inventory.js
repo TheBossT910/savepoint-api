@@ -51,7 +51,52 @@ const inventoryCondition = async( storeID, gameID, condition ) => {
     return data;
 }
 
-module.exports = { createInventory, getInventory, removeInventory, inventoryCondition };
+// returns all products from a specific store
+const getAllInventory = async ( storeID ) => {
+    const { data, error } = await supabase
+        .from('pos-inventory')
+        .select('game_id, pos-data!inner(type, condition), products!inner(cover, name)')
+        .eq('store_id', storeID);
+
+    let formattedInventory = {};
+    for (const product of data) {
+        // destructure data
+        let gameID = product.game_id
+        let { type, condition } = product['pos-data']
+        let { name, cover } = product.products
+
+        // creates the product if it does not exist
+        if ( !(gameID in formattedInventory) ) {
+            formattedInventory[gameID] = {
+                type: {
+                    'New': 0,
+                    'Complete': 0,
+                    'Loose': 0,
+                    'Parts': 0
+                },
+                condition: {
+                    'New': 0,
+                    'Excellent': 0,
+                    'Very Good': 0,
+                    'Good': 0,
+                    'Acceptable': 0
+                },
+                info: {
+                    'name': name,
+                    'cover': cover
+                }
+            }
+        }
+
+        // add data to array
+        formattedInventory[gameID]['type'][type]++
+        formattedInventory[gameID]['condition'][condition]++
+    }
+
+    return formattedInventory
+}
+
+module.exports = { createInventory, getInventory, removeInventory, inventoryCondition, getAllInventory };
 
 // testing
 // const record = {
@@ -63,5 +108,8 @@ module.exports = { createInventory, getInventory, removeInventory, inventoryCond
 // createInventory( record )
 //     .then( (res) => console.log(res) );
 
-// inventoryCondition('', 'c1866624-675e-429b-b0cc-b2f354906c95', 'New')
+// inventoryCondition('8fea0411-e4f4-4394-82a5-b703ba71f2cd', 'c1866624-675e-429b-b0cc-b2f354906c95', 'New')
 //     .then( (res) => console.log(res) );
+
+// getAllInventory( '8fea0411-e4f4-4394-82a5-b703ba71f2cd' )
+//     .then( (data) => console.log(data) );

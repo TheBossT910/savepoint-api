@@ -74,10 +74,20 @@ app.get('/pos/info', (req, res) => {
     const storeID = req.query.store_id;
     const gameID = req.query.game_id;
 
-    let response = api.stockInfo(storeID, gameID);
+    let response = api.getStockInfo(storeID, gameID);
     response
         .then( (data) => res.status(200).send( data ));
 });
+
+// get all pos products from a specific store
+app.get('/pos/get-all', (req, res) => {
+    // getting variables
+    const storeID = req.query.store_id;
+
+    let response = api.getAllStock(storeID);
+    response
+        .then( (data) => res.status(200).send(data) )
+})
 
 // DEVELOPER ENDPOINTS
 // create products
