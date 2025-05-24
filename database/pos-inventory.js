@@ -58,7 +58,7 @@ const getAllInventory = async ( storeID ) => {
         .select('game_id, pos-data!inner(type, condition), products!inner(cover, name)')
         .eq('store_id', storeID);
 
-    let formattedInventory = {};
+    let inventoryMap = {};
     for (const product of data) {
         // destructure data
         let gameID = product.game_id
@@ -66,8 +66,8 @@ const getAllInventory = async ( storeID ) => {
         let { name, cover } = product.products
 
         // creates the product if it does not exist
-        if ( !(gameID in formattedInventory) ) {
-            formattedInventory[gameID] = {
+        if ( !(gameID in inventoryMap) ) {
+            inventoryMap[gameID] = {
                 type: {
                     'New': 0,
                     'Complete': 0,
@@ -83,16 +83,18 @@ const getAllInventory = async ( storeID ) => {
                 },
                 info: {
                     'name': name,
-                    'cover': cover
+                    'cover': cover,
+                    'id': gameID
                 }
             }
         }
 
         // add data to array
-        formattedInventory[gameID]['type'][type]++
-        formattedInventory[gameID]['condition'][condition]++
+        inventoryMap[gameID]['type'][type]++
+        inventoryMap[gameID]['condition'][condition]++
     }
 
+    const formattedInventory = Object.values(inventoryMap)
     return formattedInventory
 }
 
